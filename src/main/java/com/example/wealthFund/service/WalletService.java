@@ -28,6 +28,7 @@ public class WalletService {
 
         textValidator.checkTextValidity(userName);
         textValidator.checkTextValidity(walletName);
+        textValidator.checkAndAdjustCurrencyCode(currency);
         userService.validateUserExistenceThrowExceptionDoesNotExist(userName);
         validateUniqueWalletName(userName, walletName);
 

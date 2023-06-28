@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Currency {
+public class Rates {
 
-        @JsonProperty("rates")
-        private Rates rates;
+    @JsonProperty("PLN")
+    private float PLN;
+    @JsonProperty("EUR")
+    private float EUR;
 }
