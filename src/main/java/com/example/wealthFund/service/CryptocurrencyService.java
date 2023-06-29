@@ -1,17 +1,30 @@
 package com.example.wealthFund.service;
 
+import com.example.wealthFund.model.Cryptocurrency;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Service
+@Data
 public class CryptocurrencyService {
 
     private final RestTemplate restTemplate;
     private final String apiUrl;
 
-    public CryptocurrencyService(RestTemplate restTemplate, String apiUrl) {
+    public CryptocurrencyService(RestTemplate restTemplate, @Value("${api.url}") String apiUrl) {
         this.restTemplate = restTemplate;
-        this.apiUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=100&page=1";
+        this.apiUrl = apiUrl;
     }
 
+    public List<Cryptocurrency> getCryptocurrenciesFromApi(){
+        ResponseEntity<Cryptocurrency[]> response = restTemplate.exchange(apiUrl, HttpMethod.GET, null, Cryptocurrency[].class);
+        return Arrays.asList(response.getBody());
+    }
 }

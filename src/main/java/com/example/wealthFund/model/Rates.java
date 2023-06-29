@@ -12,6 +12,7 @@ public class Rates {
 
     @JsonProperty("PLN")
     private float PLN;
+
     @JsonProperty("EUR")
     private float EUR;
 }
