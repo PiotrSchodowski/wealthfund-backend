@@ -98,6 +98,12 @@
 			<artifactId>caffeine</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		<!-- CSV -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.10.0</version>
+		</dependency>
 
 
 

@@ -1,22 +1,19 @@
 package com.example.wealthFund.restController;
 
-import com.example.wealthFund.dto.AssetDto;
-import com.example.wealthFund.service.AssetService;
 import com.example.wealthFund.service.CurrencyService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
-public class SupportController {
+@RequestMapping("/temporary")
+public class SupportController { // support controller w przyszłości zostanie rozbity na kilka controllerów
 
     private final CurrencyService currencyService;
-    private final AssetService assetService;
 
-    public SupportController(CurrencyService currencyService, AssetService assetService) {
+    public SupportController(CurrencyService currencyService) {
         this.currencyService = currencyService;
-        this.assetService = assetService;
     }
 
     @PostMapping("/exchange")
@@ -24,11 +21,6 @@ public class SupportController {
                                   @RequestParam String targetCurrency,
                                   @RequestParam float valueToChange) {
         return currencyService.convertCurrency(baseCurrency, targetCurrency, valueToChange);
-    }
-
-    @GetMapping("/crypto")
-    public List<AssetDto> getAllCryptoFromApi(){
-        return assetService.createAssetsFromCryptocurrencies();
     }
 }
 

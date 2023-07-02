@@ -6,15 +6,18 @@ import com.example.wealthFund.repository.entity.AssetEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CryptoMapper {
+public class CryptoToAssetMapper {
 
     public static List<AssetEntity> mapCryptocurrenciesToAssetEntities(List<Cryptocurrency> cryptocurrencies) {
         List<AssetEntity> assetEntities = new ArrayList<>();
         for (Cryptocurrency cryptocurrency : cryptocurrencies) {
             AssetEntity assetEntity = new AssetEntity();
             assetEntity.setName(cryptocurrency.getName());
-            assetEntity.setIsin(cryptocurrency.getSymbol());
-            assetEntity.setValue((float) cryptocurrency.getCurrentPrice());
+            assetEntity.setSymbol(cryptocurrency.getSymbol());
+            assetEntity.setPrice((float) cryptocurrency.getCurrentPrice());
+            assetEntity.setCurrency("USD");
+            assetEntity.setAssetType("Crypto");
+            assetEntity.setExchange("none");
             assetEntities.add(assetEntity);
         }
         return assetEntities;

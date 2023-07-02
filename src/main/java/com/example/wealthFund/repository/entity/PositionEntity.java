@@ -11,7 +11,6 @@ import java.util.Date;
 @Builder
 public class PositionEntity {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -25,7 +24,6 @@ public class PositionEntity {
     private Date positionEndingDate;
     private float openingCurrencyPrice;
     private float endingCurrencyPrice;
-
     private boolean isOpen;
 
     @ManyToOne

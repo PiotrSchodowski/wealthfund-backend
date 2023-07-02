@@ -23,7 +23,6 @@ public class UserService {
     }
 
     public UserDto addNewUser(String userName) {
-
         textValidator.checkTextValidity(userName);
         validateUserExistenceThrowExceptionWhenExist(userName);
 
@@ -33,7 +32,6 @@ public class UserService {
     }
 
     public boolean deleteUser(String userName) {
-
         textValidator.checkTextValidity(userName);
         validateUserExistenceThrowExceptionDoesNotExist(userName);
 
@@ -42,28 +40,24 @@ public class UserService {
     }
 
     public List<UserDto> getUsers() {
-
         List<UserDto> userDtoList;
         userDtoList = userMapper.userListToUserDtoList(userRepository.findAll());
         return userDtoList;
     }
 
-    protected UserEntity getUserByName(String userName){
-
+    protected UserEntity getUserByName(String userName) {
         textValidator.checkTextValidity(userName);
         validateUserExistenceThrowExceptionDoesNotExist(userName);
         return userRepository.findByName(userName);
     }
 
     protected void validateUserExistenceThrowExceptionDoesNotExist(String userName) {
-
         if (!userRepository.existsByUserName(userName)) {
             throw new UserNotExistException(userName);
         }
     }
 
     protected void validateUserExistenceThrowExceptionWhenExist(String userName) {
-
         if (userRepository.existsByUserName(userName)) {
             throw new UserExistException(userName);
         }

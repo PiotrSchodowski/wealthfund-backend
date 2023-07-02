@@ -5,14 +5,17 @@ import com.example.wealthFund.exception.UserExistException;
 import com.example.wealthFund.exception.UserNotExistException;
 import com.example.wealthFund.mapper.UserMapper;
 import com.example.wealthFund.repository.UserRepository;
+import com.example.wealthFund.repository.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -27,16 +30,18 @@ class UserServiceTest {
     private UserMapper userMapper;
     @Mock
     private TextValidator textValidator;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
+
     @Test
     void shouldReturnUserDto() {
 
         String userName = "Piotr";
         UserDto userDto = new UserDto(userName);
-        User user = new User();
+        UserEntity user = new UserEntity();
 
         when(userMapper.userDtoToUser(any(UserDto.class))).thenReturn(user);
         when(userRepository.existsByUserName(userName)).thenReturn(false);
@@ -59,12 +64,13 @@ class UserServiceTest {
         UserExistException exception = assertThrows(UserExistException.class, () -> userService.addNewUser(userName));
         Assertions.assertEquals("Piotr exist in database, try other name", exception.getMessage());
     }
+
     @Test
     void shouldReturnTrueWhileUserExist() {
         // Given
         String userName = "Piotr";
         when(userRepository.existsByUserName(userName)).thenReturn(true);
-        when(userRepository.findByName(userName)).thenReturn(new User());
+        when(userRepository.findByName(userName)).thenReturn(new UserEntity());
 
         // When
         boolean result = userService.deleteUser(userName);
@@ -88,9 +94,9 @@ class UserServiceTest {
     @Test
     void shouldReturnListOfUserDtoWhileUsersExist() {
         // Given
-        List<User> userList = new ArrayList<>();
-        userList.add(new User());
-        userList.add(new User());
+        List<UserEntity> userList = new ArrayList<>();
+        userList.add(new UserEntity());
+        userList.add(new UserEntity());
 
         when(userRepository.findAll()).thenReturn(userList);
         when(userMapper.userListToUserDtoList(userList)).thenReturn(new ArrayList<>());

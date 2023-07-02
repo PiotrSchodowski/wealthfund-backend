@@ -10,14 +10,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 public class AssetEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     private String name;
-    private String isin;
-    private float value;
-
-    @OneToOne
-    private DividendEntity dividendEntity;
+    private String symbol;
+    private String currency;
+    private float price;
+    private String exchange;
+    private String assetType;
 }

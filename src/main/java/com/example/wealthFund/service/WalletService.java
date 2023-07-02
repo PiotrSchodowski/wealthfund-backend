@@ -25,10 +25,9 @@ public class WalletService {
         this.userService = userService;
     }
     public WalletDto addNewWallet(String userName, String walletName, String currency) {
-
         textValidator.checkTextValidity(userName);
         textValidator.checkTextValidity(walletName);
-        textValidator.checkAndAdjustCurrencyCode(currency);
+        currency = textValidator.checkAndAdjustCurrencyCode(currency);
         userService.validateUserExistenceThrowExceptionDoesNotExist(userName);
         validateUniqueWalletName(userName, walletName);
 
@@ -40,7 +39,6 @@ public class WalletService {
     }
     @Transactional
     public boolean deleteWallet(String userName, String walletName) {
-
         textValidator.checkTextValidity(userName);
         textValidator.checkTextValidity(walletName);
         userService.validateUserExistenceThrowExceptionDoesNotExist(userName);
@@ -61,7 +59,6 @@ public class WalletService {
     }
 
     WalletEntity getWalletByName(UserEntity userEntity, String walletName) {
-
         textValidator.checkTextValidity(walletName);
         ThrowDoesNotExistException(userEntity.getName(), walletName);
         return findWalletByName(userEntity.getWallets(), walletName);
@@ -76,13 +73,11 @@ public class WalletService {
         return null;
     }
     private void validateUniqueWalletName(String userName, String walletName) {
-
         if (walletRepository.existsByWalletNameAndUserName(walletName, userName)) {
             throw new WealthFundSingleException("This name of wallet already exists");
         }
     }
     private WalletEntity createWallet(String walletName, String currency, UserEntity userEntity) {
-
         return WalletEntity.builder()
                 .name(walletName)
                 .currency(currency)
@@ -90,7 +85,6 @@ public class WalletService {
                 .build();
     }
     private void saveWalletWithUser(WalletEntity walletEntity, UserEntity userEntity) {
-
         walletRepository.save(walletEntity);
         Set<WalletEntity> wallets = userEntity.getWallets();
         wallets.add(walletEntity);
@@ -98,7 +92,6 @@ public class WalletService {
         userRepository.save(userEntity);
     }
     void ThrowDoesNotExistException(String userName, String walletName) {
-
         if (!walletRepository.existsByWalletNameAndUserName(walletName, userName)) {
             throw new WealthFundSingleException("This wallet does not exist");
         }

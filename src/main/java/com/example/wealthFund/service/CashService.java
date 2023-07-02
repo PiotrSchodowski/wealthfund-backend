@@ -28,7 +28,6 @@ public class CashService {
     }
 
     public boolean depositCashIntoTheWallet(String userName, String walletName, float valueOfDeposit) {
-
         textValidator.checkNumberValidity(valueOfDeposit);
         UserEntity userEntity = userService.getUserByName(userName);
         WalletEntity walletEntity = setupWalletWithDepositOperation(walletName, valueOfDeposit, userEntity);
@@ -37,7 +36,6 @@ public class CashService {
     }
 
     public boolean withdrawCashFromTheWallet(String userName, String walletName, float valueOfWithdraw) {
-
         textValidator.checkNumberValidity(valueOfWithdraw);
         UserEntity userEntity = userService.getUserByName(userName);
         WalletEntity walletEntity = setupWalletWithWithdrawOperation(walletName, valueOfWithdraw, userEntity);
@@ -46,7 +44,6 @@ public class CashService {
     }
 
     private WalletEntity setupWalletWithDepositOperation(String walletName, float valueOfDeposit, UserEntity userEntity) {
-
         WalletEntity walletEntity = walletService.getWalletByName(userEntity, walletName);
         CashEntity actualCash = getOrCreateCash(walletEntity);
         CashEntity updatedCash = depositCash(actualCash, valueOfDeposit);
@@ -61,7 +58,6 @@ public class CashService {
     }
 
     private WalletEntity setupWalletWithWithdrawOperation(String walletName, float valueOfWithdraw, UserEntity userEntity) {
-
         WalletEntity walletEntity = walletService.getWalletByName(userEntity, walletName);
         CashEntity actualCash = getOrCreateCash(walletEntity);
         CashEntity updatedCash = tryToWithdrawAndUpdateCash(actualCash, valueOfWithdraw, walletEntity.getCurrency());
@@ -81,7 +77,6 @@ public class CashService {
     }
 
     private CashEntity tryToWithdrawAndUpdateCash(CashEntity cashEntity, float valueOfWithdraw, String currency) {
-
         float previousValueOfCash = cashEntity.getValue();
         if (previousValueOfCash < valueOfWithdraw) {
             throw new InsufficientFundsException(previousValueOfCash, valueOfWithdraw, currency);
@@ -91,7 +86,6 @@ public class CashService {
     }
 
     private CashEntity getOrCreateCash(WalletEntity walletEntity) {
-
         CashEntity cashEntity = walletEntity.getCashEntity();
         if (cashEntity == null) {
             cashEntity = new CashEntity();
