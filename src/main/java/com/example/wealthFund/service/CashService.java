@@ -76,7 +76,7 @@ public class CashService {
         return cashEntity;
     }
 
-    private CashEntity tryToWithdrawAndUpdateCash(CashEntity cashEntity, float valueOfWithdraw, String currency) {
+    CashEntity tryToWithdrawAndUpdateCash(CashEntity cashEntity, float valueOfWithdraw, String currency) {
         float previousValueOfCash = cashEntity.getValue();
         if (previousValueOfCash < valueOfWithdraw) {
             throw new InsufficientFundsException(previousValueOfCash, valueOfWithdraw, currency);

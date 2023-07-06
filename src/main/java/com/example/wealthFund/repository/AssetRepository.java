@@ -7,11 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Repository
 public interface AssetRepository extends JpaRepository<AssetEntity,Long> {
 
-    AssetEntity findBySymbol(String symbol);
+    Optional<AssetEntity> findBySymbol(String symbol);
 
     @Transactional
     @Modifying

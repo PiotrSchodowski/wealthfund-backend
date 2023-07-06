@@ -9,15 +9,25 @@ import java.util.regex.Pattern;
 @Component
 public class TextValidator {
 
+
     public void checkTextValidity(String text) {
         containsWhitespaces(text);
         isTheTextNotAcceptableLength(text);
         containsSpecialCharacters(text);
     }
+    public void checkTextValidity(String text,String text2) {
+        checkTextValidity(text);
+        checkTextValidity(text2);
+    }
 
     public void checkNumberValidity(float text) {
         shouldByOnlyPositive(text);
         validateFloatPrecision(text);
+    }
+    public void checkNumberValidity(float text, float text2, float text3){
+        checkNumberValidity(text);
+        checkNumberValidity(text2);
+        checkNumberValidity(text3);
     }
 
     public String checkAndAdjustCurrencyCode(String text) {

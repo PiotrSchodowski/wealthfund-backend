@@ -1,20 +1,19 @@
-package com.example.wealthFund.repository.entity;
-import lombok.*;
+package com.example.wealthFund.dto;
 
-import javax.persistence.*;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
-import java.util.Date;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PositionEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class PositionDto {
 
     private float amount;
     private float commission;
@@ -27,9 +26,5 @@ public class PositionEntity {
     private float openingCurrencyRate;
     private float endingCurrencyRate;
     private boolean isOpen;
-
-    @ManyToOne
-    @JoinColumn(name = "asset_id")
-    private AssetEntity asset;
-
 }
+

@@ -42,7 +42,6 @@ public class CurrencyServiceTest {
 
     @Test
     public void shouldConvertCurrencyCorrectly() {
-
         String baseCurrency = "USD";
         String targetCurrency = "PLN";
         float value = 100f;

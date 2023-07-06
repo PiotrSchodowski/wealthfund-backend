@@ -24,6 +24,7 @@ public class WalletService {
         this.textValidator = textValidator;
         this.userService = userService;
     }
+
     public WalletDto addNewWallet(String userName, String walletName, String currency) {
         textValidator.checkTextValidity(userName);
         textValidator.checkTextValidity(walletName);
@@ -37,6 +38,7 @@ public class WalletService {
 
         return new WalletDto(walletEntity.getName(), walletEntity.getCurrency());
     }
+
     @Transactional
     public boolean deleteWallet(String userName, String walletName) {
         textValidator.checkTextValidity(userName);
@@ -58,13 +60,19 @@ public class WalletService {
         throw new WealthFundSingleException("This wallet does not exist");
     }
 
+    public void throwDoesNotExistException(String userName, String walletName) {
+        if (!walletRepository.existsByWalletNameAndUserName(walletName, userName)) {
+            throw new WealthFundSingleException("This wallet does not exist");
+        }
+    }
+
     WalletEntity getWalletByName(UserEntity userEntity, String walletName) {
         textValidator.checkTextValidity(walletName);
-        ThrowDoesNotExistException(userEntity.getName(), walletName);
+        throwDoesNotExistException(userEntity.getName(), walletName);
         return findWalletByName(userEntity.getWallets(), walletName);
     }
-    WalletEntity findWalletByName(Set<WalletEntity> wallets, String walletName) {
 
+    WalletEntity findWalletByName(Set<WalletEntity> wallets, String walletName) {
         for (WalletEntity walletEntity : wallets) {
             if (walletEntity.getName().equalsIgnoreCase(walletName)) {
                 return walletEntity;
@@ -72,11 +80,13 @@ public class WalletService {
         }
         return null;
     }
+
     private void validateUniqueWalletName(String userName, String walletName) {
         if (walletRepository.existsByWalletNameAndUserName(walletName, userName)) {
             throw new WealthFundSingleException("This name of wallet already exists");
         }
     }
+
     private WalletEntity createWallet(String walletName, String currency, UserEntity userEntity) {
         return WalletEntity.builder()
                 .name(walletName)
@@ -84,16 +94,12 @@ public class WalletService {
                 .userEntity(userEntity)
                 .build();
     }
+
     private void saveWalletWithUser(WalletEntity walletEntity, UserEntity userEntity) {
         walletRepository.save(walletEntity);
         Set<WalletEntity> wallets = userEntity.getWallets();
         wallets.add(walletEntity);
         userEntity.setWallets(wallets);
         userRepository.save(userEntity);
-    }
-    void ThrowDoesNotExistException(String userName, String walletName) {
-        if (!walletRepository.existsByWalletNameAndUserName(walletName, userName)) {
-            throw new WealthFundSingleException("This wallet does not exist");
-        }
     }
 }

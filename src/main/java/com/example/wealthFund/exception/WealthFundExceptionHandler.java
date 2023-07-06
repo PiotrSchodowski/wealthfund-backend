@@ -52,4 +52,9 @@ public class WealthFundExceptionHandler {
     public ResponseEntity<String> handlePrecisionException(PrecisionException ex) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
+
+    @ExceptionHandler(SymbolDoesNotExistException.class)
+    public ResponseEntity<String> handleSymbolDoesNotExistException(SymbolDoesNotExistException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
+    }
 }
