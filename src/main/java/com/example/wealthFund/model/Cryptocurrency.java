@@ -25,7 +25,7 @@ public class Cryptocurrency {
     private String image;
 
     @JsonProperty("current_price")
-    private double currentPrice;
+    private float price;
 
     @JsonProperty("market_cap")
     private long marketCap;

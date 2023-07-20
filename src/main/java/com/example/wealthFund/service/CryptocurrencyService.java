@@ -16,7 +16,7 @@ public class CryptocurrencyService {
     private final RestTemplate restTemplate;
     private final String apiUrl;
 
-    public CryptocurrencyService(RestTemplate restTemplate, @Value("${apiUrl.CoinGecko}") String apiUrl) {
+    public CryptocurrencyService(RestTemplate restTemplate, @Value("${apiUrl.coinGecko}") String apiUrl) {
         this.restTemplate = restTemplate;
         this.apiUrl = apiUrl;
     }

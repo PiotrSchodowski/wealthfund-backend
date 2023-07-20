@@ -16,6 +16,8 @@ public class AssetDirectoryService {
     private final RestTemplate restTemplate;
     private final String baseUrl;
     private final String apiKey;
+    private static final String GLOBAL_QUOTE_PATH = "?function=GLOBAL_QUOTE&symbol=";
+    private static final String LISTING_STATUS_PATH = "?function=LISTING_STATUS&apikey=";
 
     public AssetDirectoryService(RestTemplate restTemplate, @Value("${apiKeyAlphaVantage}") String apiKey) {
         this.restTemplate = restTemplate;
@@ -24,14 +26,14 @@ public class AssetDirectoryService {
     }
 
     public List<AssetDirectory> getAssetDirectoryFromAlphaVantageApi() {
-        String url = baseUrl + "?function=LISTING_STATUS&apikey=" + apiKey;
+        String url = baseUrl + LISTING_STATUS_PATH + apiKey;
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
         String csvData = response.getBody();
         return CsvToObjectMapper.mapCsvAssetDirectoryToObjectAssetDirectory(csvData);
     }
 
     public GlobalQuote getGlobalQuoteFromUsaAsset(String symbol) {
-        String url = baseUrl + "?function=GLOBAL_QUOTE&symbol=" + symbol + "&apikey=" + apiKey;
+        String url = baseUrl + GLOBAL_QUOTE_PATH + symbol + "&apikey=" + apiKey;
         ResponseEntity<GlobalQuote> response = restTemplate.exchange(url, HttpMethod.GET, null, GlobalQuote.class);
         return response.getBody();
     }

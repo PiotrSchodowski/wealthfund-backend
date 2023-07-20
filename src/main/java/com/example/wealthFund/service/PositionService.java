@@ -1,6 +1,7 @@
 package com.example.wealthFund.service;
 
 import com.example.wealthFund.dto.PositionDto;
+import com.example.wealthFund.dto.PositionOpenDto;
 import com.example.wealthFund.exception.WealthFundSingleException;
 import com.example.wealthFund.mapper.PositionMapper;
 import com.example.wealthFund.repository.AssetRepository;
@@ -13,7 +14,6 @@ import com.example.wealthFund.repository.entity.WalletEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -47,24 +47,30 @@ public class PositionService {
         this.walletService = walletService;
     }
 
-    public PositionDto openPosition(String userName, String walletName, String symbol,
-                                    String positionCurrency, float openingPrice, float amount, float commission) {
+    public PositionDto openPosition(String userName, String walletName, PositionOpenDto positionOpenDto) {
 
-        validateInputs(userName, walletName, openingPrice, amount, commission);
+        String symbol = positionOpenDto.getSymbol();
+        String positionCurrency = positionOpenDto.getCurrency();
+        float openingPrice = positionOpenDto.getOpeningAssetPrice();
+        float amount = positionOpenDto.getAmount();
+        float valueOfCommission = positionOpenDto.getCommission();
+        boolean isPercentageCommission = positionOpenDto.isPercentageCommission();
+
+        validateInputs(userName, walletName, openingPrice, amount, valueOfCommission);
         positionCurrency = textValidator.checkAndAdjustCurrencyCode(positionCurrency);
 
         UserEntity userEntity = userService.getUserByName(userName);
         WalletEntity walletEntity = getWalletByName(userEntity, walletName);
-
         AssetEntity assetEntity = getAssetBySymbol(symbol);
 
-        float finalPrice = convertToCurrency(openingPrice, positionCurrency, walletEntity.getCurrency());
+        float finalPrice = convertToCurrency(openingPrice, positionCurrency, walletEntity.getCurrency()); // czy takie przekazanie jest ok
         float openingCurrencyRate = finalPrice / openingPrice;
+        float valueWithoutCommission = finalPrice * amount;
+        float totalValue = calculateTotalValue(valueOfCommission, isPercentageCommission, valueWithoutCommission);
 
-        float totalValue = calculateTotalValue(finalPrice, amount, commission);
-        withdrawCash(walletEntity, totalValue, walletEntity.getCurrency());
+        withdrawCash(walletEntity, totalValue);
 
-        PositionEntity positionEntity = createPositionEntity(assetEntity, openingPrice, amount, commission, positionCurrency, openingCurrencyRate);
+        PositionEntity positionEntity = createPositionEntity(assetEntity, openingPrice, amount, valueOfCommission, positionCurrency, openingCurrencyRate, totalValue);
         savePosition(positionEntity);
         updateWalletPositions(walletEntity, positionEntity);
         saveWallet(walletEntity);
@@ -78,6 +84,9 @@ public class PositionService {
 //
 //        PositionEntity positionEntity = getPositionById(positionId);
 //
+//        float finalPrice = convertToCurrency()
+//        float endingCurrencyRate = ;
+//
 //        positionEntity.setOpen(false);
 //        positionEntity.setEndingAssetPrice(endingAssetPrice);
 //        positionEntity.setPositionEndingDate(LocalDateTime.now());
@@ -86,9 +95,17 @@ public class PositionService {
 //        return true;
 //    }
 
-    private void validateInputs(String userName, String walletName, float openingPrice, float amount, float commission) {
+    private float calculateTotalValue(float valueOfCommission, boolean isPercentageCommission, float valueWithoutCommission) {
+        if (isPercentageCommission) {
+            return valueWithoutCommission + ((valueOfCommission * valueWithoutCommission) / 100);
+        } else {
+            return valueWithoutCommission + valueOfCommission;
+        }
+    }
+
+    private void validateInputs(String userName, String walletName, float openingPrice, float amount, float percentageCommission) {
         textValidator.checkTextValidity(userName, walletName);
-        textValidator.checkNumberValidity(openingPrice, amount, commission);
+        textValidator.checkNumberValidity(openingPrice, amount, percentageCommission);
     }
 
     private WalletEntity getWalletByName(UserEntity userEntity, String walletName) {
@@ -102,7 +119,7 @@ public class PositionService {
 
     private PositionEntity getPositionById(int id) {
         return positionRepository.findById((long) id)
-                .orElseThrow(()-> new WealthFundSingleException("Position with id " + id + " not found"));
+                .orElseThrow(() -> new WealthFundSingleException("Position with id " + id + " not found"));
     }
 
     private float convertToCurrency(float amount, String baseCurrency, String targetCurrency) {
@@ -113,16 +130,13 @@ public class PositionService {
         }
     }
 
-    private float calculateTotalValue(float price, float amount, float commission) {
-        return price * amount * commission;
-    }
-
-    private void withdrawCash(WalletEntity walletEntity, float amount, String currency) {
-        walletEntity.setCashEntity(cashService.tryToWithdrawAndUpdateCash(walletEntity.getCashEntity(), amount, currency));
+    private void withdrawCash(WalletEntity walletEntity, float amount) {
+        walletEntity.setCashEntity(cashService.
+                tryToWithdrawAndUpdateCash(walletEntity.getCashEntity(), amount, walletEntity.getCurrency())); // czy takie przekazanie jest ok
     }
 
     private PositionEntity createPositionEntity(AssetEntity assetEntity, float price, float amount,
-                                                float commission, String positionCurrency, float openingCurrencyRate) {
+                                                float commission, String positionCurrency, float openingCurrencyRate, float totalValue) {
         return PositionEntity.builder()
                 .asset(assetEntity)
                 .openingAssetPrice(price)
@@ -131,6 +145,7 @@ public class PositionService {
                 .commission(commission)
                 .currency(positionCurrency)
                 .openingCurrencyRate(openingCurrencyRate)
+                .result(totalValue) //tymczasowo
                 .isOpen(true)
                 .build();
     }

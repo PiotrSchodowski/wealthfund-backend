@@ -20,6 +20,7 @@ public class PositionEntity {
     private float commission;
     private float result;
     private String currency;
+    private boolean isPercentageCommission;
     private float openingAssetPrice;
     private float endingAssetPrice;
     private LocalDateTime positionOpeningDate;

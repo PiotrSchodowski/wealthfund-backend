@@ -13,11 +13,6 @@ public class WealthFundExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
 
-    @ExceptionHandler(UserNotExistException.class)
-    public ResponseEntity<String> handleUserNotExistException(UserNotExistException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
     @ExceptionHandler(UserExistException.class)
     public ResponseEntity<String> handleUserExistException(UserExistException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -53,8 +48,8 @@ public class WealthFundExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
 
-    @ExceptionHandler(SymbolDoesNotExistException.class)
-    public ResponseEntity<String> handleSymbolDoesNotExistException(SymbolDoesNotExistException ex) {
+    @ExceptionHandler(NotExistException.class)
+    public ResponseEntity<String> handleNotExistException(NotExistException ex) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
 }

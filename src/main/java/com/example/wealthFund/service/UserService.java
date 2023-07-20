@@ -1,8 +1,8 @@
 package com.example.wealthFund.service;
 
 import com.example.wealthFund.dto.UserDto;
+import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.UserExistException;
-import com.example.wealthFund.exception.UserNotExistException;
 import com.example.wealthFund.mapper.UserMapper;
 import com.example.wealthFund.repository.UserRepository;
 import com.example.wealthFund.repository.entity.UserEntity;
@@ -53,7 +53,7 @@ public class UserService {
 
     protected void validateUserExistenceThrowExceptionDoesNotExist(String userName) {
         if (!userRepository.existsByUserName(userName)) {
-            throw new UserNotExistException(userName);
+            throw new NotExistException(userName);
         }
     }
 

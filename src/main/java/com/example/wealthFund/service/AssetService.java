@@ -1,10 +1,9 @@
 package com.example.wealthFund.service;
 
 import com.example.wealthFund.dto.AssetDto;
-import com.example.wealthFund.exception.SymbolDoesNotExistException;
+import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.WealthFundSingleException;
 import com.example.wealthFund.mapper.AssetMapper;
-import com.example.wealthFund.mapper.CryptoToAssetMapper;
 import com.example.wealthFund.model.AssetDirectory;
 import com.example.wealthFund.model.Cryptocurrency;
 import com.example.wealthFund.model.GlobalQuote;
@@ -13,6 +12,7 @@ import com.example.wealthFund.repository.AssetRepository;
 import com.example.wealthFund.repository.entity.AssetEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ public class AssetService {
     public AssetDto createAssetFromManualEntry(AssetDto assetDto) {
         Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(assetDto.getSymbol());
         if (assetEntityOptional.isPresent()) {
-            throw new WealthFundSingleException("The asset with that symbol already exists, please try enter other symbol");
+            throw new NotExistException(assetDto.getSymbol());
         } else {
             assetRepository.save(assetMapper.assetDtoToAssetEntity(assetDto));
             return assetDto;
@@ -50,9 +50,9 @@ public class AssetService {
             assetRepository.save(assetEntity);
             return assetMapper.assetEntityToAssetDto(assetEntity);
         } else {
-            throw new SymbolDoesNotExistException();
+            throw new NotExistException(symbol);
         }
-    }       //todo zrobic osobnego exceptiona
+    }
 
     public boolean deleteAssetBySymbol(String symbol) {
         Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(symbol);
@@ -61,7 +61,7 @@ public class AssetService {
             return value != 0;
 
         } else {
-            throw new SymbolDoesNotExistException();
+            throw new NotExistException(symbol);
         }
     }
 
@@ -71,13 +71,18 @@ public class AssetService {
             AssetEntity assetEntity = assetEntityOptional.get();
             return assetMapper.assetEntityToAssetDto(assetEntity);
         } else {
-            throw new SymbolDoesNotExistException();
+            throw new NotExistException(symbol);
         }
     }
 
     public List<AssetDto> createAssetsFromCryptocurrencies() {
         List<Cryptocurrency> cryptocurrencies = cryptocurrencyService.getCryptocurrenciesFromApi();
-        List<AssetEntity> assetEntities = CryptoToAssetMapper.mapCryptocurrenciesToAssetEntities(cryptocurrencies);
+        List<AssetEntity> assetEntities = new ArrayList<>();
+        for (Cryptocurrency cryptocurrency : cryptocurrencies) {
+            AssetEntity assetEntity;
+            assetEntity = assetMapper.cryptocurrencyToAssetEntity(cryptocurrency);
+            assetEntities.add(assetEntity);
+        }
         assetRepository.saveAll(assetEntities);
         return assetMapper.assetListToAssetDtoList(assetEntities);
     }

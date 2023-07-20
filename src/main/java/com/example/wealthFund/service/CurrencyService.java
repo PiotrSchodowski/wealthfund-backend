@@ -15,13 +15,14 @@ public class CurrencyService {
     private final String apiUrl;
 
     public CurrencyService(RestTemplate restTemplate,
-                           @Value("${apiKey.OpenExchangeRates}") String apiKey,
-                           @Value("${apiUrl.OpenExchangeRates}") String apiUrl) {
+                           @Value("${apiKey.openExchangeRates}") String apiKey,
+                           @Value("${apiUrl.openExchangeRates}") String apiUrl) {
         this.restTemplate = restTemplate;
         this.apiUrl = new StringBuilder(apiUrl)
                 .append(apiKey)
-                .append("&base=USD&symbols=PLN,EUR")
-                .toString();   //nie podoba mi sie to
+                .append("&base=USD")
+                .append("&symbols=PLN,EUR")
+                .toString();
     }
 
     public Currency getCurrencyFromApi() {

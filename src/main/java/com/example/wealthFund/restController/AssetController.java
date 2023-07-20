@@ -16,14 +16,9 @@ public class AssetController {
         this.assetService = assetService;
     }
 
-    @PostMapping("/dataManagement/assets/insert/{symbol}/{name}/{currency}/{price}/{exchange}/{assetType}")
-    public AssetDto entryManualAsset(@PathVariable String symbol,
-                                     @PathVariable String name,
-                                     @PathVariable String currency,
-                                     @PathVariable float price,
-                                     @PathVariable String exchange,
-                                     @PathVariable String assetType) {
-        return assetService.createAssetFromManualEntry(new AssetDto(name, symbol, currency, price, exchange, assetType));
+    @PostMapping("/dataManagement/assets/insert")
+    public AssetDto entryManualAsset(@RequestBody AssetDto assetDto) {
+        return assetService.createAssetFromManualEntry(assetDto);
     }
 
     @PostMapping("/dataManagement/assets/update/{symbol}/{price}")
