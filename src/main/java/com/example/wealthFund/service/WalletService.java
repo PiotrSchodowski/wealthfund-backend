@@ -66,6 +66,11 @@ public class WalletService {
         }
     }
 
+    WalletEntity getWalletEntity(String userName, String walletName) {
+        UserEntity userEntity = userService.getUserByName(userName);
+        return getWalletByName(userEntity, walletName);
+    }
+
     WalletEntity getWalletByName(UserEntity userEntity, String walletName) {
         textValidator.checkTextValidity(walletName);
         throwDoesNotExistException(userEntity.getName(), walletName);

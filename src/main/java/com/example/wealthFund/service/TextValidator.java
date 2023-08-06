@@ -1,5 +1,7 @@
 package com.example.wealthFund.service;
 
+import com.example.wealthFund.dto.positionDtos.AddPositionDto;
+import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
 import com.example.wealthFund.exception.*;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +11,19 @@ import java.util.regex.Pattern;
 @Component
 public class TextValidator {
 
+    public AddPositionDto validateAddPosition(String userName, String walletName, AddPositionDto addPositionDto){
+        checkTextValidity(userName, walletName);
+        checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getCommission());
+        addPositionDto.setCurrency(checkAndAdjustCurrencyCode(addPositionDto.getCurrency()));
+        return addPositionDto;
+    }
+    public SubtractPositionDto validateSubtractPosition(String userName, String walletName, SubtractPositionDto subtractPositionDto){
+        checkTextValidity(userName, walletName);
+        checkNumberValidity(subtractPositionDto.getEndingAssetPrice());
+        checkNumberValidity(subtractPositionDto.getQuantityOfAsset());
+        subtractPositionDto.setCurrency(checkAndAdjustCurrencyCode(subtractPositionDto.getCurrency()));
+        return subtractPositionDto;
+    }
 
     public void checkTextValidity(String text) {
         containsWhitespaces(text);

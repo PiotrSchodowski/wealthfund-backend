@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -19,6 +20,8 @@ public class WalletEntity {
 
     private String name;
     private String currency;
+    private float basicValue;
+    private float actualValue;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -29,12 +32,13 @@ public class WalletEntity {
     private CashEntity cashEntity;
 
     @ElementCollection
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.ALL})
     private Set<PositionEntity> positions;
 
     @ElementCollection
-    @OneToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "wallet_id")
     private List<UserCashTransactionEntity> userTransactions;
+
 
 }

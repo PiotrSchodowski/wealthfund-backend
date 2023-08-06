@@ -1,6 +1,7 @@
 package com.example.wealthFund.service;
 
 import com.example.wealthFund.dto.UserDto;
+import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.UserExistException;
 import com.example.wealthFund.mapper.UserMapper;
 import com.example.wealthFund.repository.UserRepository;
@@ -85,8 +86,8 @@ class UserServiceTest {
         when(userRepository.existsByUserName(userName)).thenReturn(false);
 
         // When & Then
-        UserNotExistException exception = assertThrows(UserNotExistException.class, () -> userService.deleteUser(userName));
-        Assertions.assertEquals("Piotr does not exist in database", exception.getMessage());
+        NotExistException exception = assertThrows(NotExistException.class, () -> userService.deleteUser(userName));
+        Assertions.assertEquals("Piotr does not exist, please try again.", exception.getMessage());
     }
 
 

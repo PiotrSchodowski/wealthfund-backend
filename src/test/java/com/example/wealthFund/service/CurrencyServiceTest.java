@@ -25,10 +25,10 @@ public class CurrencyServiceTest {
     @Mock
     RestTemplate restTemplate;
 
-    @Value("${apiKey.OpenExchangeRates}")
+    @Value("${apiKey.openExchangeRates}")
     private String apiKey;
 
-    @Value("${apiUrl.OpenExchangeRates}")
+    @Value("${apiUrl.openExchangeRates}")
     private String apiUrl;
 
     private CurrencyService currencyService;

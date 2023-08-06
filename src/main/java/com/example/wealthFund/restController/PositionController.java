@@ -1,29 +1,34 @@
 package com.example.wealthFund.restController;
 
-import com.example.wealthFund.dto.PositionDto;
-import com.example.wealthFund.dto.PositionOpenDto;
-import com.example.wealthFund.service.PositionService;
-import com.example.wealthFund.service.WalletService;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.wealthFund.dto.positionDtos.AddPositionDto;
+import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
+import com.example.wealthFund.service.PositionManager;
+
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PositionController {
 
-    private final PositionService positionService;
-    private final WalletService walletService;
+    private final PositionManager positionManager;
 
-    public PositionController(PositionService positionService, WalletService walletService) {
-        this.positionService = positionService;
-        this.walletService = walletService;
+
+    public PositionController(PositionManager positionManager) {
+        this.positionManager = positionManager;
     }
 
-    @PostMapping("/user/{userName}/wallet/{walletName}/position")
-    public PositionDto openPosition(@PathVariable String userName,
-                                    @PathVariable String walletName,
-                                    @RequestBody PositionOpenDto positionOpenDto) {
-        return positionService.openPosition(userName, walletName, positionOpenDto);
+    @PostMapping("/user/{userName}/wallet/{walletName}/position/add")
+    public AddPositionDto addPosition(@PathVariable String userName,
+                                      @PathVariable String walletName,
+                                      @RequestBody AddPositionDto addPositionDto) {
+        return positionManager.addPosition(userName, walletName, addPositionDto);
     }
+
+    @PostMapping("/user/{userName}/wallet/{walletName}/position/decrease")
+    public SubtractPositionDto decreasePosition(@PathVariable String userName,
+                                                @PathVariable String walletName,
+                                                @RequestBody SubtractPositionDto subtractPositionDto) {
+        return positionManager.subtractPosition(userName, walletName, subtractPositionDto);
+    }
+
+
 }

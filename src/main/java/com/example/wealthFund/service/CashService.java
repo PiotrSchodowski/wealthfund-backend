@@ -9,6 +9,7 @@ import com.example.wealthFund.repository.entity.WalletEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class CashService {
@@ -43,6 +44,10 @@ public class CashService {
         return true;
     }
 
+    public void withdrawCash(WalletEntity walletEntity, float amount) {
+        walletEntity.setCashEntity(tryToWithdrawAndUpdateCash(walletEntity.getCashEntity(), amount, walletEntity.getCurrency()));
+    }
+
     private WalletEntity setupWalletWithDepositOperation(String walletName, float valueOfDeposit, UserEntity userEntity) {
         WalletEntity walletEntity = walletService.getWalletByName(userEntity, walletName);
         CashEntity actualCash = getOrCreateCash(walletEntity);
@@ -71,13 +76,17 @@ public class CashService {
         return walletEntity;
     }
 
-    private CashEntity depositCash(CashEntity cashEntity, float valueOfDeposit) {
+    CashEntity depositCash(CashEntity cashEntity, float valueOfDeposit) {
         cashEntity.setValue(cashEntity.getValue() + valueOfDeposit);
         return cashEntity;
     }
 
-    CashEntity tryToWithdrawAndUpdateCash(CashEntity cashEntity, float valueOfWithdraw, String currency) {
-        float previousValueOfCash = cashEntity.getValue();
+    private CashEntity tryToWithdrawAndUpdateCash(CashEntity cashEntity, float valueOfWithdraw, String currency) {
+        float previousValueOfCash = 0;
+        Optional<CashEntity> optionalCash = Optional.ofNullable(cashEntity);
+        if (optionalCash.isPresent()) {
+            previousValueOfCash = optionalCash.get().getValue();
+        }
         if (previousValueOfCash < valueOfWithdraw) {
             throw new InsufficientFundsException(previousValueOfCash, valueOfWithdraw, currency);
         }

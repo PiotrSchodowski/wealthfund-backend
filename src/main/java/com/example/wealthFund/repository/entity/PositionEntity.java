@@ -16,21 +16,21 @@ public class PositionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    private float amount;
-    private float commission;
-    private float result;
-    private String currency;
-    private boolean isPercentageCommission;
-    private float openingAssetPrice;
-    private float endingAssetPrice;
+    private String symbol;
+    private float quantity;
+    private String basicCurrency;
+    private String targetCurrency;
     private LocalDateTime positionOpeningDate;
-    private LocalDateTime positionEndingDate;
-    private float openingCurrencyRate;
-    private float endingCurrencyRate;
-    private boolean isOpen;
+    private float valueBasedOnPurchasePrice;
 
-    @ManyToOne
-    @JoinColumn(name = "asset_id")
-    private AssetEntity asset;
+    private float averagePurchasePrice;
+
+    private float actualPrice;
+    private LocalDateTime actualPriceDate;
+    private float valueOfPosition;              //cena aktualna * ilość
+    private float percentageOfThePortfolio;     //stosunek wartości portfela do wartości pozycji
+
+    private float rateOfReturn;  //stopa zwrotu czyli stosunek aktualnej ceny waloru do średniej zakupu
+    private float result;           //valueOfPosition - averagePurchasePrice * quantity
 
 }

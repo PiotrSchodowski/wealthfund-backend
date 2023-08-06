@@ -22,14 +22,13 @@ public class AssetService {
     private final CryptocurrencyService cryptocurrencyService;
     private final AssetMapper assetMapper;
     private final AssetDirectoryService assetDirectoryService;
-    private final TextValidator textValidator; //bedzie zaraz wykorzystywany ;)
 
-    public AssetService(AssetRepository assetRepository, CryptocurrencyService cryptocurrencyService, AssetMapper assetMapper, AssetDirectoryService assetDirectoryService, TextValidator textValidator) {
+    public AssetService(AssetRepository assetRepository, CryptocurrencyService cryptocurrencyService,
+                        AssetMapper assetMapper, AssetDirectoryService assetDirectoryService) {
         this.assetRepository = assetRepository;
         this.cryptocurrencyService = cryptocurrencyService;
         this.assetMapper = assetMapper;
         this.assetDirectoryService = assetDirectoryService;
-        this.textValidator = textValidator;
     }
 
     public AssetDto createAssetFromManualEntry(AssetDto assetDto) {
@@ -73,6 +72,11 @@ public class AssetService {
         } else {
             throw new NotExistException(symbol);
         }
+    }
+
+    public AssetEntity getAssetEntityBySymbol(String symbol) {
+        return assetRepository.findBySymbol(symbol)
+                .orElseThrow(() -> new WealthFundSingleException("Asset with symbol " + symbol + " not found"));
     }
 
     public List<AssetDto> createAssetsFromCryptocurrencies() {
