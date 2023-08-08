@@ -18,14 +18,16 @@ public class CashService {
     private final TextValidator textValidator;
     private final UserService userService;
     private final WalletService walletService;
+    private final ActualizationService actualizationService;
 
     public CashService(WalletRepository walletRepository,
                        TextValidator textValidator, UserService userService,
-                       WalletService walletService) {
+                       WalletService walletService, ActualizationService actualizationService) {
         this.walletRepository = walletRepository;
         this.textValidator = textValidator;
         this.userService = userService;
         this.walletService = walletService;
+        this.actualizationService = actualizationService;
     }
 
     public boolean depositCashIntoTheWallet(String userName, String walletName, float valueOfDeposit) {
@@ -33,6 +35,7 @@ public class CashService {
         UserEntity userEntity = userService.getUserByName(userName);
         WalletEntity walletEntity = setupWalletWithDepositOperation(walletName, valueOfDeposit, userEntity);
         walletRepository.save(walletEntity);
+        actualizationService.actualizeWalletData(walletEntity);
         return true;
     }
 
@@ -41,6 +44,7 @@ public class CashService {
         UserEntity userEntity = userService.getUserByName(userName);
         WalletEntity walletEntity = setupWalletWithWithdrawOperation(walletName, valueOfWithdraw, userEntity);
         walletRepository.save(walletEntity);
+        actualizationService.actualizeWalletData(walletEntity);
         return true;
     }
 
@@ -95,10 +99,7 @@ public class CashService {
     }
 
     private CashEntity getOrCreateCash(WalletEntity walletEntity) {
-        CashEntity cashEntity = walletEntity.getCashEntity();
-        if (cashEntity == null) {
-            cashEntity = new CashEntity();
-        }
-        return cashEntity;
+        Optional<CashEntity> optionalCash = Optional.ofNullable(walletEntity.getCashEntity());
+        return optionalCash.orElseGet(CashEntity::new);
     }
 }

@@ -38,5 +38,3 @@ public class AssetDirectoryService {
         return response.getBody();
     }
 }
-
-//todo wykorzystac SpringBuilder

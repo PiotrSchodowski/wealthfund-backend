@@ -16,14 +16,14 @@ public class PositionController {
         this.positionManager = positionManager;
     }
 
-    @PostMapping("/user/{userName}/wallet/{walletName}/position/add")
+    @PostMapping("/user/{userName}/wallet/{walletName}/position")
     public AddPositionDto addPosition(@PathVariable String userName,
                                       @PathVariable String walletName,
                                       @RequestBody AddPositionDto addPositionDto) {
         return positionManager.addPosition(userName, walletName, addPositionDto);
     }
 
-    @PostMapping("/user/{userName}/wallet/{walletName}/position/decrease")
+    @PutMapping("/user/{userName}/wallet/{walletName}/position/decrease")
     public SubtractPositionDto decreasePosition(@PathVariable String userName,
                                                 @PathVariable String walletName,
                                                 @RequestBody SubtractPositionDto subtractPositionDto) {

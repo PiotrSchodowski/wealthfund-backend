@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.function.Predicate;
 
 @Service
 public class PositionManager {
@@ -75,16 +76,14 @@ public class PositionManager {
 
     private PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
         return walletEntity.getPositions().stream()
-                .filter(positionEntity -> positionEntity.getSymbol().equals(addPositionDto.getSymbol())
-                        && positionEntity.getBasicCurrency().equals(addPositionDto.getCurrency()))
+                .filter(positionEntity -> isMatchingSymbolAndCurrency(positionEntity, addPositionDto.getSymbol(), addPositionDto.getCurrency()))
                 .findFirst()
                 .orElseGet(() -> openNewPositionEntity(addPositionDto, walletEntity));
     }
 
     private PositionEntity returnPositionEntity(WalletEntity walletEntity, SubtractPositionDto subtractPositionDto) {
         return walletEntity.getPositions().stream()
-                .filter(positionEntity -> positionEntity.getSymbol().equals(subtractPositionDto.getSymbol())
-                        && positionEntity.getBasicCurrency().equals(subtractPositionDto.getCurrency()))
+                .filter(positionEntity -> isMatchingSymbolAndCurrency(positionEntity, subtractPositionDto.getSymbol(), subtractPositionDto.getCurrency()))
                 .findFirst()
                 .orElseThrow(() -> new NotExistException(subtractPositionDto.getSymbol()));
     }
@@ -112,7 +111,10 @@ public class PositionManager {
                 positionEntities.add(positionEntity);
             }
         } else {
-            positionEntities.removeIf(pos -> pos.getSymbol().equals(positionEntity.getSymbol()) && pos.getBasicCurrency().equals(positionEntity.getBasicCurrency()));
+            Predicate<PositionEntity> matchingSymbolAndCurrency = pos ->
+                    isMatchingSymbolAndCurrency(pos, positionEntity.getSymbol(), positionEntity.getBasicCurrency());
+
+            positionEntities.removeIf(matchingSymbolAndCurrency);
             positionRepository.deleteById(positionEntity.getId());
         }
 
@@ -121,9 +123,16 @@ public class PositionManager {
     }
 
     private PositionEntity findPositionBySymbolAndCurrency(Set<PositionEntity> positionEntities, String symbol, String currency) {
+        Predicate<PositionEntity> symbolAndCurrencyMatcher = positionEntity ->
+                isMatchingSymbolAndCurrency(positionEntity, symbol, currency);
+
         return positionEntities.stream()
-                .filter(positionEntity -> positionEntity.getSymbol().equals(symbol) && positionEntity.getBasicCurrency().equals(currency))
+                .filter(symbolAndCurrencyMatcher)
                 .findFirst()
                 .orElse(null);
+    }
+
+    private boolean isMatchingSymbolAndCurrency(PositionEntity positionEntity, String symbol, String currency) {
+        return positionEntity.getSymbol().equals(symbol) && positionEntity.getBasicCurrency().equals(currency);
     }
 }

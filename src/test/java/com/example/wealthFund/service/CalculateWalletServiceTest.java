@@ -48,16 +48,17 @@ public class CalculateWalletServiceTest {
         CashEntity cashEntity = new CashEntity();
         cashEntity.setValue(1000.0f);
         walletEntity.setCashEntity(cashEntity);
+        PositionEntity positionEntity = new PositionEntity();
+        positionEntity.setValueOfPosition(1000.0f);
         Set<PositionEntity> positionEntities = new HashSet<>();
-        positionEntities.add(new PositionEntity());
+        positionEntities.add(positionEntity);
         walletEntity.setPositions(positionEntities);
         List<UserCashTransactionEntity> userTransactions = Collections.singletonList(new UserCashTransactionEntity());
         walletEntity.setUserTransactions(userTransactions);
 
         float result = calculateWalletService.calculateWalletActualResult(walletEntity);
 
-        float expectedValue = calculateWalletService.calculateWalletActualValue(walletEntity)
-                - calculateWalletService.calculateWalletBasicValue(walletEntity);
+        float expectedValue = 2000.0f;
 
         assertEquals(expectedValue, result, 0.001);
     }

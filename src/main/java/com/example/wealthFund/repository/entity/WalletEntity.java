@@ -32,13 +32,12 @@ public class WalletEntity {
     private CashEntity cashEntity;
 
     @ElementCollection
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL})
     private Set<PositionEntity> positions;
 
     @ElementCollection
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "wallet_id")
     private List<UserCashTransactionEntity> userTransactions;
-
 
 }

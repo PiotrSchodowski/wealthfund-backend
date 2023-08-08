@@ -17,6 +17,7 @@ public class TextValidator {
         addPositionDto.setCurrency(checkAndAdjustCurrencyCode(addPositionDto.getCurrency()));
         return addPositionDto;
     }
+
     public SubtractPositionDto validateSubtractPosition(String userName, String walletName, SubtractPositionDto subtractPositionDto){
         checkTextValidity(userName, walletName);
         checkNumberValidity(subtractPositionDto.getEndingAssetPrice());
@@ -30,6 +31,7 @@ public class TextValidator {
         isTheTextNotAcceptableLength(text);
         containsSpecialCharacters(text);
     }
+
     public void checkTextValidity(String text,String text2) {
         checkTextValidity(text);
         checkTextValidity(text2);
@@ -39,6 +41,7 @@ public class TextValidator {
         shouldByOnlyPositive(text);
         validateFloatPrecision(text);
     }
+
     public void checkNumberValidity(float text, float text2, float text3){
         checkNumberValidity(text);
         checkNumberValidity(text2);
