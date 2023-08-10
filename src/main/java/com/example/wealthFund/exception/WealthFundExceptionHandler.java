@@ -52,4 +52,9 @@ public class WealthFundExceptionHandler {
     public ResponseEntity<String> handleNotExistException(NotExistException ex) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
+
+    @ExceptionHandler(CsvProcessingException.class)
+    public ResponseEntity<String> handleCsvProcessingException(CsvProcessingException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
+    }
 }

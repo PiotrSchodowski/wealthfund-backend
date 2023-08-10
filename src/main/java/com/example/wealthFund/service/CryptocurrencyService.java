@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CryptocurrencyService {
@@ -24,6 +25,16 @@ public class CryptocurrencyService {
     public List<Cryptocurrency> getCryptocurrenciesFromApi() {
         ResponseEntity<Cryptocurrency[]> response = restTemplate.exchange(apiUrl, HttpMethod.GET, null, Cryptocurrency[].class);
         return Arrays.asList(response.getBody());
+    }
+
+    public Cryptocurrency getCryptocurrencyBySymbol(String symbol) {
+        List<Cryptocurrency> cryptocurrencies = getCryptocurrenciesFromApi();
+
+        Optional<Cryptocurrency> foundCryptocurrency = cryptocurrencies.stream()
+                .filter(crypto -> crypto.getSymbol().equalsIgnoreCase(symbol))
+                .findFirst();
+
+        return foundCryptocurrency.orElse(null);
     }
 
 }

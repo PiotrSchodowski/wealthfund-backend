@@ -6,12 +6,14 @@ import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.WealthFundSingleException;
 import com.example.wealthFund.repository.PositionRepository;
 import com.example.wealthFund.repository.WalletRepository;
+import com.example.wealthFund.repository.entity.OperationHistory;
 import com.example.wealthFund.repository.entity.PositionEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -47,6 +49,9 @@ public class PositionManager {
         positionEntity = calculatePositionService.increasePositionData(positionEntity, addPositionDto);
 
         cashService.withdrawCash(walletEntity, addPositionDto.getTotalValueEntered());
+        OperationHistory operationHistory = saveOperationHistory(positionEntity, addPositionDto);
+        addOperationToWallet(walletEntity, operationHistory);
+
         savePositionEntity(positionEntity, walletEntity);
         actualizationService.actualizeWalletData(walletEntity);
         return addPositionDto;
@@ -61,6 +66,9 @@ public class PositionManager {
         positionEntity = updateSubtractingPosition(positionEntity, subtractPositionDto);
 
         cashService.depositCash(walletEntity.getCashEntity(), subtractPositionDto.getTotalValueEntered());
+        OperationHistory operationHistory = saveOperationHistory(positionEntity, subtractPositionDto);
+        addOperationToWallet(walletEntity, operationHistory);
+
         savePositionEntity(positionEntity, walletEntity);
         actualizationService.actualizeWalletData(walletEntity);
         return subtractPositionDto;
@@ -76,14 +84,14 @@ public class PositionManager {
 
     private PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
         return walletEntity.getPositions().stream()
-                .filter(positionEntity -> isMatchingSymbolAndCurrency(positionEntity, addPositionDto.getSymbol(), addPositionDto.getCurrency()))
+                .filter(isMatchingSymbolAndCurrency(addPositionDto.getSymbol(), addPositionDto.getCurrency()))
                 .findFirst()
                 .orElseGet(() -> openNewPositionEntity(addPositionDto, walletEntity));
     }
 
     private PositionEntity returnPositionEntity(WalletEntity walletEntity, SubtractPositionDto subtractPositionDto) {
         return walletEntity.getPositions().stream()
-                .filter(positionEntity -> isMatchingSymbolAndCurrency(positionEntity, subtractPositionDto.getSymbol(), subtractPositionDto.getCurrency()))
+                .filter(isMatchingSymbolAndCurrency(subtractPositionDto.getSymbol(), subtractPositionDto.getCurrency()))
                 .findFirst()
                 .orElseThrow(() -> new NotExistException(subtractPositionDto.getSymbol()));
     }
@@ -92,10 +100,44 @@ public class PositionManager {
 
         return PositionEntity.builder()
                 .symbol(addPositionDto.getSymbol())
-                .basicCurrency(addPositionDto.getCurrency())
-                .targetCurrency(walletEntity.getCurrency())
+                .userCurrency(addPositionDto.getCurrency())
+                .walletCurrency(walletEntity.getCurrency())
                 .positionOpeningDate(LocalDateTime.now())
                 .build();
+    }
+
+    private OperationHistory saveOperationHistory(PositionEntity positionEntity, AddPositionDto addPositionDto) {
+
+        return OperationHistory.builder()
+                .symbol(positionEntity.getSymbol())
+                .price(addPositionDto.getPrice())
+                .quantity(addPositionDto.getQuantity())
+                .walletCurrency(positionEntity.getWalletCurrency())
+                .positionCurrency(positionEntity.getUserCurrency())
+                .valueOperation(addPositionDto.getTotalValueEntered())
+                .date(LocalDateTime.now())
+                .build();
+    }
+
+    private OperationHistory saveOperationHistory(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
+
+        return OperationHistory.builder()
+                .symbol(positionEntity.getSymbol())
+                .price(subtractPositionDto.getEndingAssetPrice())
+                .quantity(subtractPositionDto.getQuantityOfAsset() * -1)
+                .walletCurrency(positionEntity.getWalletCurrency())
+                .positionCurrency(positionEntity.getUserCurrency())
+                .valueOperation(subtractPositionDto.getTotalValueEntered() * -1)
+                .date(LocalDateTime.now())
+                .build();
+    }
+
+    private void addOperationToWallet(WalletEntity walletEntity, OperationHistory operationHistory) {
+        List<OperationHistory> operationHistories = walletEntity.getOperationHistories();
+        operationHistory.setWalletName(walletEntity.getName());
+        operationHistories.add(operationHistory);
+        walletEntity.setOperationHistories(operationHistories);
+        walletRepository.save(walletEntity);
     }
 
     @Transactional
@@ -103,7 +145,7 @@ public class PositionManager {
         Set<PositionEntity> positionEntities = walletEntity.getPositions();
 
         if (positionEntity.getQuantity() > 0) {
-            PositionEntity existingPosition = findPositionBySymbolAndCurrency(positionEntities, positionEntity.getSymbol(), positionEntity.getBasicCurrency());
+            PositionEntity existingPosition = findPositionBySymbolAndCurrency(positionEntities, positionEntity.getSymbol(), positionEntity.getUserCurrency());
 
             if (existingPosition != null) {
                 calculatePositionService.copyPositionFields(positionEntity, existingPosition);
@@ -111,9 +153,7 @@ public class PositionManager {
                 positionEntities.add(positionEntity);
             }
         } else {
-            Predicate<PositionEntity> matchingSymbolAndCurrency = pos ->
-                    isMatchingSymbolAndCurrency(pos, positionEntity.getSymbol(), positionEntity.getBasicCurrency());
-
+            Predicate<PositionEntity> matchingSymbolAndCurrency = isMatchingSymbolAndCurrency(positionEntity.getSymbol(), positionEntity.getUserCurrency());
             positionEntities.removeIf(matchingSymbolAndCurrency);
             positionRepository.deleteById(positionEntity.getId());
         }
@@ -123,16 +163,14 @@ public class PositionManager {
     }
 
     private PositionEntity findPositionBySymbolAndCurrency(Set<PositionEntity> positionEntities, String symbol, String currency) {
-        Predicate<PositionEntity> symbolAndCurrencyMatcher = positionEntity ->
-                isMatchingSymbolAndCurrency(positionEntity, symbol, currency);
 
         return positionEntities.stream()
-                .filter(symbolAndCurrencyMatcher)
+                .filter(isMatchingSymbolAndCurrency(symbol, currency))
                 .findFirst()
                 .orElse(null);
     }
 
-    private boolean isMatchingSymbolAndCurrency(PositionEntity positionEntity, String symbol, String currency) {
-        return positionEntity.getSymbol().equals(symbol) && positionEntity.getBasicCurrency().equals(currency);
+    private Predicate<PositionEntity> isMatchingSymbolAndCurrency(String symbol, String currency) {
+        return pos -> pos.getSymbol().equals(symbol) && pos.getUserCurrency().equals(currency);
     }
 }

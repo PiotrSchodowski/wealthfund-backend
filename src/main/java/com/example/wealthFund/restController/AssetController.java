@@ -1,19 +1,24 @@
 package com.example.wealthFund.restController;
 
 import com.example.wealthFund.dto.AssetDto;
+import com.example.wealthFund.model.AssetPrice;
 import com.example.wealthFund.model.GlobalQuote;
 import com.example.wealthFund.service.AssetService;
+import com.example.wealthFund.service.ScrapperService;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 public class AssetController {
 
     private final AssetService assetService;
+    private final ScrapperService scrapperService;
 
-    public AssetController(AssetService assetService) {
+    public AssetController(AssetService assetService, ScrapperService scrapperService) {
         this.assetService = assetService;
+        this.scrapperService = scrapperService;
     }
 
     @PostMapping("/dataManagement/assets/insert")
@@ -44,13 +49,21 @@ public class AssetController {
 
     @GetMapping("/dataManagement/assets/import/usaAssets")
     public List<AssetDto> saveUsaAssetsFromApi() {
-        return assetService.createAssetsFromAssetDirectory();
+        return assetService.createAssetsFromUsaAssetApi();
+    }
+
+    @GetMapping("/dataManagement/assets/import/gpwAssets")
+    public List<AssetDto> saveGpwAssetsFromFile() {
+        return assetService.createAssetsFromGpwAssetFile();
     }
 
     @PostMapping("/dataManagement/assets/update/usaAssets/setPrice/{symbol}")
     public GlobalQuote savePriceToUsaAsset(@PathVariable String symbol) {
         return assetService.savePriceToUsaAsset(symbol);
-    }//todo controller oraz service bedzie modyfikowany po wprowadzeniu większej ilości ApiServisów
-    //todo tataj sa tylko Amerykańskie, w planach sa jeszcze europejskie(LON,FRK,BER,PAR) oraz GPW
-    //todo kazda odpowiedz z Api bedzie pewnie miała swoje "GlobalQuote" więc utworze klasę mapującą te wszystkie ApiResponsy na jedną uniwersalną klasę
+    }
+
+    @PostMapping("/dataManagement/assets/update/{symbol}")
+    public AssetPrice savePriceOfAsset(@PathVariable String symbol){
+        return scrapperService.getAssetPriceBySymbol(symbol);
+    }
 }

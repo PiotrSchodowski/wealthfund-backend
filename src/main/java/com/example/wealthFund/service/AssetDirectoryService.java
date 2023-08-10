@@ -1,6 +1,6 @@
 package com.example.wealthFund.service;
 
-import com.example.wealthFund.mapper.CsvToObjectMapper;
+import com.example.wealthFund.mapper.ApiCsvToAssetDirectoryMapper;
 import com.example.wealthFund.model.AssetDirectory;
 import com.example.wealthFund.model.GlobalQuote;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ public class AssetDirectoryService {
         String url = baseUrl + LISTING_STATUS_PATH + apiKey;
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
         String csvData = response.getBody();
-        return CsvToObjectMapper.mapCsvAssetDirectoryToObjectAssetDirectory(csvData);
+        return ApiCsvToAssetDirectoryMapper.mapCsvAssetDirectoryToObjectAssetDirectory(csvData);
     }
 
     public GlobalQuote getGlobalQuoteFromUsaAsset(String symbol) {

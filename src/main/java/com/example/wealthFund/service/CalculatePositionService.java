@@ -42,9 +42,12 @@ public class CalculatePositionService {
     PositionEntity increasePositionData(PositionEntity positionEntity, AddPositionDto addPositionDto) {
         float averageAssetPrice = calculateAveragePrice(positionEntity, addPositionDto);
         AssetEntity assetEntity = checkIsAssetPresent(addPositionDto);
-        float actualPrice = convertToCurrency(assetEntity.getPrice(), assetEntity.getCurrency(), positionEntity.getTargetCurrency());
+        assetEntity = assetService.setPriceIfThereIsNone(assetEntity);
+        float actualPrice = convertToCurrency(assetEntity.getPrice(), assetEntity.getCurrency(), positionEntity.getWalletCurrency());
 
         positionEntity.setQuantity(positionEntity.getQuantity() + addPositionDto.getQuantity());
+        positionEntity.setBasicCurrency(assetEntity.getCurrency());
+        positionEntity.setExchange(assetEntity.getExchange());
         positionEntity.setAveragePurchasePrice(averageAssetPrice);
         positionEntity.setValueBasedOnPurchasePrice(positionEntity.getValueBasedOnPurchasePrice() + addPositionDto.getTotalValueEntered());
         positionEntity.setActualPrice(actualPrice);
@@ -87,7 +90,7 @@ public class CalculatePositionService {
     }
 
     private AssetEntity checkIsAssetPresent(AddPositionDto addPositionDto) {
-        return assetService.getAssetEntityBySymbol(addPositionDto.getSymbol());
+        return assetService.getAssetEntityBySymbolAndExchange(addPositionDto.getSymbol(), addPositionDto.getExchange());
     }
 
     private float calculateAveragePrice(PositionEntity positionEntity, AddPositionDto addPositionDto) {
@@ -99,4 +102,6 @@ public class CalculatePositionService {
     private float calculateRateOfReturn(float actualPrice, PositionEntity positionEntity) {
         return ((actualPrice - positionEntity.getAveragePurchasePrice()) / positionEntity.getAveragePurchasePrice()) * 100;
     }
+
+
 }

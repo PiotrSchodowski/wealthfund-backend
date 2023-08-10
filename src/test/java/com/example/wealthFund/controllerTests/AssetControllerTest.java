@@ -84,7 +84,7 @@ public class AssetControllerTest {
     @Test
     public void shouldSaveUsaAssetsFromApi() {
         List<AssetDto> assetList = new ArrayList<>();
-        when(assetService.createAssetsFromAssetDirectory()).thenReturn(assetList);
+        when(assetService.createAssetsFromUsaAssetApi()).thenReturn(assetList);
 
         List<AssetDto> result = assetController.saveUsaAssetsFromApi();
 

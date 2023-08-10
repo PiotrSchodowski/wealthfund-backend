@@ -16,7 +16,7 @@ public class AssetDirectory {
     @JsonProperty("name")
     private String name;
 
-    private String currency = "USD";
+    private String currency;
 
     @JsonProperty("exchange")
     private String exchange;

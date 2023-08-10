@@ -10,7 +10,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvToObjectMapper {
+public class ApiCsvToAssetDirectoryMapper {
 
     public static List<AssetDirectory> mapCsvAssetDirectoryToObjectAssetDirectory(String csvData) {
         List<AssetDirectory> assetDirectories = new ArrayList<>();
@@ -32,4 +32,5 @@ public class CsvToObjectMapper {
 
         return assetDirectories;
     }
+
 }

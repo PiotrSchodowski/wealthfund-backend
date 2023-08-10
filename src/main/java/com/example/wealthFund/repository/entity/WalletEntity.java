@@ -40,4 +40,9 @@ public class WalletEntity {
     @JoinColumn(name = "wallet_id")
     private List<UserCashTransactionEntity> userTransactions;
 
+    @ElementCollection
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "wallet_id")
+    private List<OperationHistory> operationHistories;
+
 }

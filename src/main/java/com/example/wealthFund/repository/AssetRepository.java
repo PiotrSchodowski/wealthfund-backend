@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface AssetRepository extends JpaRepository<AssetEntity,Long> {
 
     Optional<AssetEntity> findBySymbol(String symbol);
+    Optional<AssetEntity> findBySymbolAndExchange(String symbol, String exchange);
 
     @Transactional
     @Modifying

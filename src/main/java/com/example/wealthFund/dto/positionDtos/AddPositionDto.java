@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class AddPositionDto {
 
     private String symbol;
+    private String exchange;
     private float quantity;
     private float price;
     private String currency;

@@ -3,7 +3,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Data
@@ -17,9 +16,12 @@ public class PositionEntity {
     Long id;
 
     private String symbol;
+    private String name;
+    private String exchange;
     private float quantity;
+    private String userCurrency;
     private String basicCurrency;
-    private String targetCurrency;
+    private String walletCurrency;
     private LocalDateTime positionOpeningDate;
     private float valueBasedOnPurchasePrice;
     private float averagePurchasePrice;
