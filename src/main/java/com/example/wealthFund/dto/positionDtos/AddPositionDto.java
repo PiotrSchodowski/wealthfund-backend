@@ -22,7 +22,7 @@ public class AddPositionDto {
     private float openingCurrencyRate;
     private float commission;
     private boolean isPercentageCommission;
-    private LocalDateTime dateOpening;
+    private LocalDateTime timeOpening;
     private float totalValueEntered;
 }
 

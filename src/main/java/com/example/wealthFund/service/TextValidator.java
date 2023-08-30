@@ -20,8 +20,8 @@ public class TextValidator {
 
     public SubtractPositionDto validateSubtractPosition(String userName, String walletName, SubtractPositionDto subtractPositionDto){
         checkTextValidity(userName, walletName);
-        checkNumberValidity(subtractPositionDto.getEndingAssetPrice());
-        checkNumberValidity(subtractPositionDto.getQuantityOfAsset());
+        checkNumberValidity(subtractPositionDto.getPrice());
+        checkNumberValidity(subtractPositionDto.getQuantity());
         subtractPositionDto.setCurrency(checkAndAdjustCurrencyCode(subtractPositionDto.getCurrency()));
         return subtractPositionDto;
     }
@@ -84,7 +84,7 @@ public class TextValidator {
         }
     }
 
-    private void validateFloatPrecision(Float text) {
+    void validateFloatPrecision(Float text) {
         String numberString = Float.toString(text);
         int decimalIndex = numberString.indexOf('.');
         if (decimalIndex != -1) {

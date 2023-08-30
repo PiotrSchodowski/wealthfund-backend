@@ -5,14 +5,16 @@ import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.WealthFundSingleException;
 import com.example.wealthFund.mapper.AssetMapper;
 import com.example.wealthFund.mapper.FileCsvToAssetDirectoryMapper;
-import com.example.wealthFund.model.*;
+import com.example.wealthFund.model.AssetDirectory;
+import com.example.wealthFund.model.Cryptocurrency;
+import com.example.wealthFund.model.GlobalQuote;
+import com.example.wealthFund.model.GlobalQuoteData;
 import com.example.wealthFund.repository.AssetRepository;
 import com.example.wealthFund.repository.entity.AssetEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -68,21 +70,10 @@ public class AssetService {
         }
     }
 
-    public AssetDto getAssetBySymbol(String symbol) {
-        Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(symbol);
-        if (assetEntityOptional.isPresent()) {
-            AssetEntity assetEntity = assetEntityOptional.get();
-            return assetMapper.assetEntityToAssetDto(assetEntity);
-        } else {
-            throw new NotExistException(symbol);
-        }
-    }
+    public AssetEntity getAssetEntityBySymbolAndExchange(String symbol, String exchange) { //todo nie wiem jak to testowac
 
-    public AssetEntity getAssetEntityBySymbolAndExchange(String symbol, String exchange) {
-        AssetEntity assetSymbolAndExchange = assetRepository.findBySymbolAndExchange(symbol, exchange)
+        return assetRepository.findBySymbolAndExchange(symbol, exchange)
                 .orElseThrow(() -> new WealthFundSingleException("Asset with symbol " + symbol + " and exchange " + exchange + " not found"));
-
-        return assetSymbolAndExchange;
     }
 
     public List<AssetDto> createAssetsFromCryptocurrencies() {

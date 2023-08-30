@@ -28,6 +28,8 @@ public class OperationHistory {
     private String walletCurrency;
     private String walletName;
     private LocalDateTime date;
+    private String exchange;
+
 
     private float valueOperation;
 }

@@ -52,6 +52,11 @@ public class CashService {
         walletEntity.setCashEntity(tryToWithdrawAndUpdateCash(walletEntity.getCashEntity(), amount, walletEntity.getCurrency()));
     }
 
+    CashEntity depositCash(CashEntity cashEntity, float valueOfDeposit) {
+        cashEntity.setValue(cashEntity.getValue() + valueOfDeposit);
+        return cashEntity;
+    }
+
     private WalletEntity setupWalletWithDepositOperation(String walletName, float valueOfDeposit, UserEntity userEntity) {
         WalletEntity walletEntity = walletService.getWalletByName(userEntity, walletName);
         CashEntity actualCash = getOrCreateCash(walletEntity);
@@ -78,11 +83,6 @@ public class CashService {
 
         walletEntity.getUserTransactions().add(userCashTransactionEntity);
         return walletEntity;
-    }
-
-    CashEntity depositCash(CashEntity cashEntity, float valueOfDeposit) {
-        cashEntity.setValue(cashEntity.getValue() + valueOfDeposit);
-        return cashEntity;
     }
 
     private CashEntity tryToWithdrawAndUpdateCash(CashEntity cashEntity, float valueOfWithdraw, String currency) {

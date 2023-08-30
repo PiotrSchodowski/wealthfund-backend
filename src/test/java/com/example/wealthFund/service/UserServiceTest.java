@@ -66,11 +66,14 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnTrueWhileUserExist() {
+    void shouldReturnTrueWhileUserExist() {  //todo nie czaje tego testu czemu nie przechodzi, program przechodzi
         // Given
         String userName = "Piotr";
-        when(userRepository.existsByUserName(userName)).thenReturn(true);
-        when(userRepository.findByName(userName)).thenReturn(new UserEntity());
+        UserEntity user = new UserEntity();
+        user.setName(userName);
+
+        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.findByName(userName)).thenReturn(user);
 
         // When
         boolean result = userService.deleteUser(userName);

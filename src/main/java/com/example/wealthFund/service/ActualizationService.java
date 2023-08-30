@@ -44,7 +44,7 @@ public class ActualizationService {
         walletRepository.save(walletEntity);
     }
 
-    private void actualizePositionAssetPrice(PositionEntity positionEntity) {
+    void actualizePositionAssetPrice(PositionEntity positionEntity) {
         AssetDto assetDto = new AssetDto();
         assetDto.setSymbol(positionEntity.getSymbol());
         assetDto.setExchange(positionEntity.getExchange());

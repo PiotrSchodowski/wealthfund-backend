@@ -63,15 +63,6 @@ public class AssetControllerTest {
     }
 
     @Test
-    public void shouldGetAssetBySymbol() {
-        when(assetService.getAssetBySymbol(eq(symbol))).thenReturn(assetDto);
-
-        AssetDto result = assetController.entryManualPriceOfAsset(symbol);
-
-        assertThat(result).isEqualTo(assetDto);
-    }
-
-    @Test
     public void shouldSaveCryptocurrenciesFromApi() {
         List<AssetDto> assetList = new ArrayList<>();
         when(assetService.createAssetsFromCryptocurrencies()).thenReturn(assetList);

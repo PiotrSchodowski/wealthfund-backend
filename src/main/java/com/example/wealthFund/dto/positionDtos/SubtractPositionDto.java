@@ -14,7 +14,7 @@ public class SubtractPositionDto {
     private String symbol;
     private String currency;
     private float endingCurrencyRate;
-    private float endingAssetPrice;
-    private float quantityOfAsset;
+    private float price;
+    private float quantity;
     private float totalValueEntered;
 }

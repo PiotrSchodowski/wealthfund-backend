@@ -27,11 +27,11 @@ public class CalculatePositionService {
     }
 
     public float calculateTotalValueEntered(SubtractPositionDto subtractPositionDto) {
-        return (subtractPositionDto.getQuantityOfAsset() * subtractPositionDto.getEndingAssetPrice()) * subtractPositionDto.getEndingCurrencyRate();
+        return (subtractPositionDto.getQuantity() * subtractPositionDto.getPrice()) * subtractPositionDto.getEndingCurrencyRate();
     }
 
     PositionEntity decreasePositionData(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
-        positionEntity.setQuantity(positionEntity.getQuantity() - subtractPositionDto.getQuantityOfAsset());
+        positionEntity.setQuantity(positionEntity.getQuantity() - subtractPositionDto.getQuantity());
         positionEntity.setValueBasedOnPurchasePrice(positionEntity.getQuantity() * positionEntity.getAveragePurchasePrice());
         positionEntity.setValueOfPosition(positionEntity.getQuantity() * positionEntity.getActualPrice());
         positionEntity.setResult(positionEntity.getValueOfPosition() - positionEntity.getValueBasedOnPurchasePrice());
@@ -45,6 +45,9 @@ public class CalculatePositionService {
         assetEntity = assetService.setPriceIfThereIsNone(assetEntity);
         float actualPrice = convertToCurrency(assetEntity.getPrice(), assetEntity.getCurrency(), positionEntity.getWalletCurrency());
 
+        if (positionEntity.getName() == null) {
+            positionEntity.setName(assetEntity.getName());
+        }
         positionEntity.setQuantity(positionEntity.getQuantity() + addPositionDto.getQuantity());
         positionEntity.setBasicCurrency(assetEntity.getCurrency());
         positionEntity.setExchange(assetEntity.getExchange());
@@ -69,6 +72,14 @@ public class CalculatePositionService {
         destination.setRateOfReturn(source.getRateOfReturn());
     }
 
+    float convertToCurrency(float price, String baseCurrency, String targetCurrency) {
+        if (targetCurrency.equals(baseCurrency)) {
+            return price;
+        } else {
+            return currencyService.convertCurrency(baseCurrency, targetCurrency, price);
+        }
+    }
+
     private float calculateValueAfterCurrencyConvert(AddPositionDto addPositionDto, float valueBeforeConvert) {
         return addPositionDto.getOpeningCurrencyRate() * valueBeforeConvert;
     }
@@ -78,14 +89,6 @@ public class CalculatePositionService {
             return (valueOfCommission * valueWithoutCommission) / 100;
         } else {
             return valueOfCommission;
-        }
-    }
-
-    float convertToCurrency(float price, String baseCurrency, String targetCurrency) {
-        if (targetCurrency.equals(baseCurrency)) {
-            return price;
-        } else {
-            return currencyService.convertCurrency(baseCurrency, targetCurrency, price);
         }
     }
 
@@ -102,6 +105,5 @@ public class CalculatePositionService {
     private float calculateRateOfReturn(float actualPrice, PositionEntity positionEntity) {
         return ((actualPrice - positionEntity.getAveragePurchasePrice()) / positionEntity.getAveragePurchasePrice()) * 100;
     }
-
 
 }

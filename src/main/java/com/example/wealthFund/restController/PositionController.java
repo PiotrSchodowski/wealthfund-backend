@@ -2,6 +2,7 @@ package com.example.wealthFund.restController;
 
 import com.example.wealthFund.dto.positionDtos.AddPositionDto;
 import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
+import com.example.wealthFund.dto.positionDtos.UndoPositionDto;
 import com.example.wealthFund.service.PositionManager;
 
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,13 @@ public class PositionController {
                                                 @PathVariable String walletName,
                                                 @RequestBody SubtractPositionDto subtractPositionDto) {
         return positionManager.subtractPosition(userName, walletName, subtractPositionDto);
+    }
+
+    @DeleteMapping("/user/{userName}/wallet/{walletName}/position/{id}/undo")
+    public UndoPositionDto undoOperation(@PathVariable String userName,
+                                         @PathVariable String walletName,
+                                         @PathVariable Long id) {
+        return positionManager.undoOperation(userName, walletName, id);
     }
 
 

@@ -2,8 +2,11 @@ package com.example.wealthFund.service;
 
 import com.example.wealthFund.dto.positionDtos.AddPositionDto;
 import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
+import com.example.wealthFund.dto.positionDtos.UndoPositionDto;
 import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.WealthFundSingleException;
+import com.example.wealthFund.mapper.UndoPositionMapper;
+import com.example.wealthFund.repository.OperationHistoryRepo;
 import com.example.wealthFund.repository.PositionRepository;
 import com.example.wealthFund.repository.WalletRepository;
 import com.example.wealthFund.repository.entity.OperationHistory;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -27,10 +31,13 @@ public class PositionManager {
     private final CalculatePositionService calculatePositionService;
     private final WalletService walletService;
     private final ActualizationService actualizationService;
+    private final OperationHistoryRepo operationHistoryRepo;
+    private final UndoPositionMapper undoPositionMapper;
 
     public PositionManager(PositionRepository positionRepository, WalletRepository walletRepository, TextValidator textValidator,
                            CashService cashService, CalculatePositionService calculatePositionService, WalletService walletService,
-                           ActualizationService actualizationService) {
+                           ActualizationService actualizationService, UndoPositionMapper undoPositionMapper,
+                           OperationHistoryRepo operationHistoryRepo) {
         this.positionRepository = positionRepository;
         this.walletRepository = walletRepository;
         this.textValidator = textValidator;
@@ -38,6 +45,8 @@ public class PositionManager {
         this.calculatePositionService = calculatePositionService;
         this.walletService = walletService;
         this.actualizationService = actualizationService;
+        this.operationHistoryRepo = operationHistoryRepo;
+        this.undoPositionMapper = undoPositionMapper;
     }
 
     public AddPositionDto addPosition(String userName, String walletName, AddPositionDto addPositionDto) {
@@ -74,12 +83,65 @@ public class PositionManager {
         return subtractPositionDto;
     }
 
+    public UndoPositionDto undoOperation(String userName, String walletName, Long id) {
+
+        WalletEntity walletEntity = walletService.getWalletEntity(userName, walletName);
+        UndoPositionDto undoPositionDto = deleteOperationHistory(walletEntity, id);
+        PositionEntity positionEntity = returnPositionEntity(walletEntity, undoPositionDto);
+
+        if (undoPositionDto.getQuantity() < 0) {
+            AddPositionDto addPositionDto = undoPositionMapper.UndoPositionDtoToAddPositionDto(undoPositionDto);
+            addPositionDto.setQuantity(undoPositionDto.getQuantity() * -1);
+            addPositionDto.setTotalValueEntered(undoPositionDto.getValueOperation() * (-1));
+
+            calculatePositionService.increasePositionData(positionEntity, addPositionDto);
+            cashService.withdrawCash(walletEntity, addPositionDto.getTotalValueEntered());
+        } else {
+            SubtractPositionDto subtractPositionDto = undoPositionMapper.UndoPositionDtoToSubtractPositionDto(undoPositionDto);
+            calculatePositionService.decreasePositionData(positionEntity, subtractPositionDto);
+            cashService.depositCash(walletEntity.getCashEntity(), undoPositionDto.getValueOperation());
+        }
+        savePositionEntity(positionEntity, walletEntity);
+        actualizationService.actualizeWalletData(walletEntity);
+
+        return undoPositionDto;
+    }
+
+
+    private UndoPositionDto deleteOperationHistory(WalletEntity walletEntity, Long id) {
+        List<OperationHistory> operationHistories = walletEntity.getOperationHistories();
+
+        Optional<OperationHistory> operationHistoryToDelete = operationHistories.stream()
+                .filter(history -> history.getId().equals(id))
+                .findFirst();
+
+        OperationHistory historyToDelete = operationHistoryToDelete.orElseThrow(() ->
+                new NotExistException(id + " id"));
+
+
+        UndoPositionDto undoPositionDto = undoPositionMapper.operationHistoryToUndoPositionDto(historyToDelete);
+        operationHistories.remove(historyToDelete);
+        walletEntity.setOperationHistories(operationHistories);
+
+        operationHistoryRepo.deleteById(id);
+        walletRepository.save(walletEntity);
+
+        return undoPositionDto;
+    }
+
     private PositionEntity updateSubtractingPosition(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
-        if (subtractPositionDto.getQuantityOfAsset() > positionEntity.getQuantity()) {
+        if (subtractPositionDto.getQuantity() > positionEntity.getQuantity()) {
             throw new WealthFundSingleException("The quantity entered exceeds the value of the position");
         } else {
             return calculatePositionService.decreasePositionData(positionEntity, subtractPositionDto);
         }
+    }
+
+    private PositionEntity returnPositionEntity(WalletEntity walletEntity, UndoPositionDto undoPositionDto) {
+        return walletEntity.getPositions().stream()
+                .filter(isMatchingSymbolAndCurrency(undoPositionDto.getSymbol(), undoPositionDto.getPositionCurrency()))
+                .findFirst()
+                .orElseThrow(() -> new NotExistException(undoPositionDto.getSymbol()));
     }
 
     private PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
@@ -116,6 +178,7 @@ public class PositionManager {
                 .positionCurrency(positionEntity.getUserCurrency())
                 .valueOperation(addPositionDto.getTotalValueEntered())
                 .date(LocalDateTime.now())
+                .exchange(positionEntity.getExchange())
                 .build();
     }
 
@@ -123,12 +186,13 @@ public class PositionManager {
 
         return OperationHistory.builder()
                 .symbol(positionEntity.getSymbol())
-                .price(subtractPositionDto.getEndingAssetPrice())
-                .quantity(subtractPositionDto.getQuantityOfAsset() * -1)
+                .price(subtractPositionDto.getPrice())
+                .quantity(subtractPositionDto.getQuantity() * -1)
                 .walletCurrency(positionEntity.getWalletCurrency())
                 .positionCurrency(positionEntity.getUserCurrency())
                 .valueOperation(subtractPositionDto.getTotalValueEntered() * -1)
                 .date(LocalDateTime.now())
+                .exchange(positionEntity.getExchange())
                 .build();
     }
 

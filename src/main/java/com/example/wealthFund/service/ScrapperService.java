@@ -22,7 +22,6 @@ public class ScrapperService {
             if (priceElement != null) {
                 String priceText = priceElement.text();
                 double price = Double.parseDouble(priceText.replace(",", "."));
-
                 return new AssetPrice(symbol, price);
             } else {
                 throw new WealthFundSingleException("Price element not found for symbol " + symbol);

@@ -37,11 +37,6 @@ public class AssetController {
         return assetService.deleteAssetBySymbol(symbol);
     }
 
-    @GetMapping("/dataManagement/assets/get/{symbol}")
-    public AssetDto entryManualPriceOfAsset(@PathVariable String symbol) {
-        return assetService.getAssetBySymbol(symbol);
-    }
-
     @GetMapping("/dataManagement/assets/import/cryptocurrencies")
     public List<AssetDto> saveCryptocurrenciesFromApi() {
         return assetService.createAssetsFromCryptocurrencies();
