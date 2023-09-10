@@ -46,7 +46,6 @@ public class CurrencyServiceTest {
         String targetCurrency = "PLN";
         float value = 100f;
 
-
         Rates rates = new Rates();
         rates.setPLN(4.0f);
         rates.setEUR(0.9f);
@@ -55,10 +54,8 @@ public class CurrencyServiceTest {
         ResponseEntity<Currency> responseEntity = new ResponseEntity<>(currency, HttpStatus.OK);
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(null), eq(Currency.class))).thenReturn(responseEntity);
 
-        // When
         float convertedValue = currencyService.convertCurrency(baseCurrency, targetCurrency, value);
 
-        // Then
         float expectedValue = value * 4.0f;
         Assertions.assertEquals(expectedValue, convertedValue);
     }

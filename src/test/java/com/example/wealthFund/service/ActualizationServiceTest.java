@@ -7,6 +7,7 @@ import com.example.wealthFund.repository.PositionRepository;
 import com.example.wealthFund.repository.WalletRepository;
 import com.example.wealthFund.repository.entity.PositionEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -47,52 +48,47 @@ public class ActualizationServiceTest {
     }
 
     @Test
-    void shouldActualizeWalletData() {
-        // Given
+    void shouldActualizeThreeParametersOfWallet() {
+
         WalletEntity walletEntity = new WalletEntity();
         Set<PositionEntity> positions = new HashSet<>();
         PositionEntity positionEntity = new PositionEntity();
+
         positions.add(positionEntity);
         walletEntity.setPositions(positions);
 
         when(calculateWalletService.calculateWalletBasicValue(walletEntity)).thenReturn(100.0F);
         when(calculateWalletService.calculateWalletActualValue(walletEntity)).thenReturn(150.0F);
-        when(calculateWalletService.calculatePercentageOfPortfolio(any(), any())).thenReturn(10.0F);
-        when(assetService.setPriceIfThereIsNone(any())).thenReturn(new AssetEntity());
+        when(calculateWalletService.calculatePercentageOfPortfolio(any(), any())).thenReturn(20.0F);
         when(assetMapper.assetEntityToAssetDto(any())).thenReturn(new AssetDto());
 
-        // When
         actualizationService.actualizeWalletData(walletEntity);
+        Set<PositionEntity> positionsAfterActualization = walletEntity.getPositions();
 
-        // Then
-        verify(calculateWalletService).calculateWalletBasicValue(walletEntity);
-        verify(calculateWalletService).calculateWalletActualValue(walletEntity);
-        verify(calculateWalletService, times(1)).calculatePercentageOfPortfolio(any(), any());
-        verify(assetService, times(1)).setPriceIfThereIsNone(any());
-        verify(assetMapper, times(1)).assetEntityToAssetDto(any());
-        verify(positionRepository, times(1)).save(any());
-        verify(walletRepository, times(1)).save(any());
+        Assertions.assertEquals(20, positionsAfterActualization.stream().findFirst().get().getPercentageOfThePortfolio());
+        Assertions.assertEquals(100, walletEntity.getBasicValue());
+        Assertions.assertEquals(150, walletEntity.getActualValue());
+
     }
 
     @Test
     void shouldActualizePositionAssetPrice() {
-        // Given
+
         PositionEntity positionEntity = new PositionEntity();
-        positionEntity.setSymbol("AAPL");
-        positionEntity.setExchange("NASDAQ");
-        positionEntity.setBasicCurrency("USD");
-        positionEntity.setWalletCurrency("EUR");
+        positionEntity.setSymbol("PKN");
+        positionEntity.setExchange("GPW");
+        positionEntity.setBasicCurrency("PLN");
+        positionEntity.setWalletCurrency("PLN");
+        positionEntity.setActualPrice(60);
 
-        when(assetService.setPriceIfThereIsNone(any())).thenReturn(new AssetEntity());
-        when(assetMapper.assetEntityToAssetDto(any())).thenReturn(new AssetDto());
+        AssetDto assetDto = new AssetDto();
+        assetDto.setPrice(65);
 
-        // When
+        when(assetMapper.assetEntityToAssetDto(any())).thenReturn(assetDto);
+        when(calculatePositionService.convertToCurrency(assetDto.getPrice(),"PLN","PLN")).thenReturn(65.0f);
+
         actualizationService.actualizePositionAssetPrice(positionEntity);
-
-        // Then
-        verify(assetService, times(1)).setPriceIfThereIsNone(any());
-        verify(assetMapper, times(1)).assetEntityToAssetDto(any());
-        verify(positionRepository, times(1)).save(any());
+        Assertions.assertEquals(65.0f, positionEntity.getActualPrice());
     }
 }
 

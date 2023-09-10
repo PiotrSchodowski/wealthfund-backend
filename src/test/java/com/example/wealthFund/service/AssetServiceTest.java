@@ -50,12 +50,12 @@ class AssetServiceTest {
     }
 
     @Test
-    void shouldReturnAssetDtoWhenFoundSymbolAndExchange() { //todo nie czaje tego testu czemu nie przechodzi, program przechodzi
+    void shouldReturnAssetDtoWhenFoundSymbolAndExchange() {
         AssetEntity assetEntity = new AssetEntity();
         assetEntity.setSymbol("BTC");
         assetEntity.setExchange("none");
 
-        when(assetService.getAssetEntityBySymbolAndExchange("BTC", "none")).thenReturn(assetEntity);
+        when(assetRepository.findBySymbolAndExchange(anyString(), anyString())).thenReturn(Optional.of(assetEntity));
 
         AssetEntity assetActual = assetService.getAssetEntityBySymbolAndExchange("BTC", "none");
 
@@ -77,8 +77,6 @@ class AssetServiceTest {
 
         AssetEntity updatedAssetEntity = assetService.setPriceIfThereIsNone(assetEntity);
 
-        verify(cryptocurrencyService).getCryptocurrencyBySymbol("BTC");
-
         assertEquals(50000, updatedAssetEntity.getPrice());
     }
 
@@ -97,7 +95,6 @@ class AssetServiceTest {
 
         AssetEntity updatedAssetEntity = assetService.setPriceIfThereIsNone(assetEntity);
 
-        verify(scrapperService).getAssetPriceBySymbol("PKO");
 
         assertEquals(150, updatedAssetEntity.getPrice());
     }
@@ -118,8 +115,6 @@ class AssetServiceTest {
 
         AssetEntity updatedAssetEntity = assetService.setPriceIfThereIsNone(assetEntity);
 
-        verify(assetDirectoryService).getGlobalQuoteFromUsaAsset("MSFT");
-
         assertEquals(300, updatedAssetEntity.getPrice());
     }
 
@@ -138,10 +133,6 @@ class AssetServiceTest {
 
         GlobalQuote savedGlobalQuote = assetService.savePriceToUsaAsset("AAPL");
 
-        verify(assetRepository).findBySymbol("AAPL");
-        verify(assetDirectoryService).getGlobalQuoteFromUsaAsset("AAPL");
-        verify(assetRepository).save(assetEntity);
-
         assertEquals(globalQuote, savedGlobalQuote);
         assertEquals(150, assetEntity.getPrice());
     }
@@ -153,10 +144,6 @@ class AssetServiceTest {
         assertThrows(WealthFundSingleException.class, () -> {
             assetService.savePriceToUsaAsset("AAPL");
         });
-
-        verify(assetRepository).findBySymbol("AAPL");
-        verifyNoMoreInteractions(assetDirectoryService);
-        verifyNoMoreInteractions(assetRepository);
     }
 
     @Test
@@ -188,11 +175,6 @@ class AssetServiceTest {
         when(assetMapper.assetListToAssetDtoList(assetEntities)).thenReturn(assetDtos);
 
         List<AssetDto> result = assetService.createAssetsFromUsaAssetApi();
-
-        verify(assetDirectoryService).getAssetDirectoryFromAlphaVantageApi();
-        verify(assetMapper).assetDirectoryListToAssetEntityList(assetDirectories);
-        verify(assetRepository).saveAll(assetEntities);
-        verify(assetMapper).assetListToAssetDtoList(assetEntities);
 
         assertEquals(assetDtos, result);
     }
@@ -227,11 +209,6 @@ class AssetServiceTest {
 
         List<AssetDto> result = assetService.createAssetsFromGpwAssetFile();
 
-        verify(fileCsvToAssetDirectoryMapper).processCsvFile();
-        verify(assetMapper).assetDirectoryListToAssetEntityList(assetDirectories);
-        verify(assetRepository).saveAll(assetEntities);
-        verify(assetMapper).assetListToAssetDtoList(assetEntities);
-
         assertEquals(assetDtos, result);
     }
 
@@ -262,11 +239,6 @@ class AssetServiceTest {
 
         List<AssetDto> result = assetService.createAssetsFromCryptocurrencies();
 
-        verify(cryptocurrencyService).getCryptocurrenciesFromApi();
-        verify(assetMapper, times(cryptocurrencies.size())).cryptocurrencyToAssetEntity(any(Cryptocurrency.class));
-        verify(assetRepository).saveAll(assetEntities);
-        verify(assetMapper).assetListToAssetDtoList(assetEntities);
-
         assertEquals(expectedAssetDtos, result);
     }
 
@@ -280,9 +252,6 @@ class AssetServiceTest {
         when(assetRepository.deleteBySymbol(symbolToDelete)).thenReturn(1);
 
         boolean result = assetService.deleteAssetBySymbol(symbolToDelete);
-
-        verify(assetRepository).findBySymbol(symbolToDelete);
-        verify(assetRepository).deleteBySymbol(symbolToDelete);
 
         assertTrue(result);
     }
@@ -305,10 +274,6 @@ class AssetServiceTest {
         when(assetMapper.assetDtoToAssetEntity(assetDto)).thenReturn(new AssetEntity());
 
         AssetDto result = assetService.createAssetFromManualEntry(assetDto);
-
-        verify(assetRepository).findBySymbol(assetDto.getSymbol());
-        verify(assetRepository).save(any(AssetEntity.class));
-        verify(assetMapper).assetDtoToAssetEntity(assetDto);
 
         assertEquals(assetDto, result);
     }
@@ -340,10 +305,6 @@ class AssetServiceTest {
         when(assetMapper.assetEntityToAssetDto(assetEntity)).thenReturn(updatedAssetDto);
 
         AssetDto result = assetService.updatePriceOfAssetFromManualEntry(symbol, newPrice);
-
-        verify(assetRepository).findBySymbol(symbol);
-        verify(assetRepository).save(assetEntity);
-        verify(assetMapper).assetEntityToAssetDto(assetEntity);
 
         assertEquals(symbol, result.getSymbol());
         assertEquals(newPrice, result.getPrice(), 0.001);

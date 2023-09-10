@@ -66,37 +66,30 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnTrueWhileUserExist() {  //todo nie czaje tego testu czemu nie przechodzi, program przechodzi
-        // Given
+    void shouldReturnTrueWhileUserExist() {
         String userName = "Piotr";
         UserEntity user = new UserEntity();
         user.setName(userName);
 
-        when(userRepository.save(user)).thenReturn(user);
-        when(userRepository.findByName(userName)).thenReturn(user);
+        when(userRepository.existsByUserName(userName)).thenReturn(true);
+        when(userRepository.deleteByName(userName)).thenReturn(1);
 
-        // When
         boolean result = userService.deleteUser(userName);
 
-        // Then
         Assertions.assertTrue(result);
     }
 
     @Test
     void ShouldThrowUserNotExistException() {
-        // Given
         String userName = "Piotr";
         when(userRepository.existsByUserName(userName)).thenReturn(false);
 
-        // When & Then
         NotExistException exception = assertThrows(NotExistException.class, () -> userService.deleteUser(userName));
         Assertions.assertEquals("Piotr does not exist, please try again.", exception.getMessage());
     }
 
-
     @Test
     void shouldReturnListOfUserDtoWhileUsersExist() {
-        // Given
         List<UserEntity> userList = new ArrayList<>();
         userList.add(new UserEntity());
         userList.add(new UserEntity());
@@ -104,10 +97,8 @@ class UserServiceTest {
         when(userRepository.findAll()).thenReturn(userList);
         when(userMapper.userListToUserDtoList(userList)).thenReturn(new ArrayList<>());
 
-        // When
         List<UserDto> result = userService.getUsers();
 
-        // Then
         Assertions.assertNotNull(result);
         Assertions.assertEquals(0, result.size());
     }
