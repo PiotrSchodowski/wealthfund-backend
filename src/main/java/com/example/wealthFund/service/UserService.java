@@ -16,10 +16,10 @@ public class UserService {
     private final UserMapper userMapper;
     private final TextValidator textValidator;
 
-    public UserService(UserMapper userMapper, UserRepository userRepository) {
+    public UserService(UserMapper userMapper, UserRepository userRepository, TextValidator textValidator) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
-        this.textValidator = new TextValidator();
+        this.textValidator = textValidator;
     }
 
     public UserDto addNewUser(String userName) {

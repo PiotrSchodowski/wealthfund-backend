@@ -40,12 +40,9 @@ public class CalculatePositionServiceTest {
         when(currencyService.convertCurrency(anyString(), anyString(), anyFloat())).thenReturn(10.0f);
         when(assetService.getAssetEntityBySymbolAndExchange(anyString(), anyString())).thenReturn(new AssetEntity());
 
-
         float result = calculatePositionService.calculateTotalValueEntered(addPositionDto);
 
-
         assertEquals(60f, result);
-
     }
 
     @Test
@@ -64,10 +61,11 @@ public class CalculatePositionServiceTest {
     }
 
     @Test
-    public void shouldIncreasePositionData() { //todo jak takie rzeczy robić
+    public void shouldIncreasePositionData() {
 
         PositionEntity positionEntity = new PositionEntity();
         positionEntity.setQuantity(10);
+        positionEntity.setWalletCurrency("currency");
         AddPositionDto addPositionDto = new AddPositionDto();
         addPositionDto.setQuantity(3);
         addPositionDto.setTotalValueEntered(50);
@@ -75,15 +73,12 @@ public class CalculatePositionServiceTest {
         AssetEntity assetEntity = new AssetEntity();
         assetEntity.setPrice(10);
 
-        when(assetService.getAssetEntityBySymbolAndExchange(anyString(), anyString())).thenReturn(assetEntity);
-        when(currencyService.convertCurrency(anyString(), anyString(), anyFloat())).thenReturn(10.0f);
-
+        when(assetService.getAssetEntityBySymbolAndExchange(anyString(), anyString())).thenReturn(new AssetEntity());
+        when(assetService.setPriceIfThereIsNone(any())).thenReturn(assetEntity);
 
         PositionEntity result = calculatePositionService.increasePositionData(positionEntity, addPositionDto);
 
         assertEquals(13, result.getQuantity());
-
-
     }
 
 }

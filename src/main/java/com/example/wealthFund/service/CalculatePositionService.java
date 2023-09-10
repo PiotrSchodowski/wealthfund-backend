@@ -41,8 +41,8 @@ public class CalculatePositionService {
 
     PositionEntity increasePositionData(PositionEntity positionEntity, AddPositionDto addPositionDto) {
         float averageAssetPrice = calculateAveragePrice(positionEntity, addPositionDto);
-        AssetEntity assetEntity = checkIsAssetPresent(addPositionDto);
-        assetEntity = assetService.setPriceIfThereIsNone(assetEntity);
+        AssetEntity assetEntityBefore = checkIsAssetPresent(addPositionDto);      //todo nazewnictwo poprawic bo nie czytelne
+        AssetEntity assetEntity = assetService.setPriceIfThereIsNone(assetEntityBefore);
         float actualPrice = convertToCurrency(assetEntity.getPrice(), assetEntity.getCurrency(), positionEntity.getWalletCurrency());
 
         if (positionEntity.getName() == null) {

@@ -1,5 +1,6 @@
 package com.example.wealthFund.service;
 
+import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.WealthFundSingleException;
 import com.example.wealthFund.repository.UserRepository;
 import com.example.wealthFund.repository.WalletRepository;
@@ -78,7 +79,6 @@ public class WalletServiceTest {
         doNothing().when(textValidator).checkTextValidity(anyString());
         doNothing().when(userService).validateUserExistenceThrowExceptionDoesNotExist(userName);
 
-
         boolean result = walletService.deleteWallet(userName, walletName);
 
         assertTrue(result);
@@ -92,19 +92,18 @@ public class WalletServiceTest {
         UserEntity userEntity = new UserEntity();
         userEntity.setName(userName);
         WalletEntity walletEntity = new WalletEntity();
-        walletEntity.setName("walletName");
+
+        walletEntity.setName("notExistingWallet");
+
         walletEntity.setUserEntity(userEntity);
         Set<WalletEntity> wallets = new HashSet<>();
         wallets.add(walletEntity);
         userEntity.setWallets(wallets);
 
         when(userRepository.findByName(userName)).thenReturn(userEntity);
-        doNothing().when(textValidator).checkTextValidity(anyString());
-        doNothing().when(userService).validateUserExistenceThrowExceptionDoesNotExist(userName);
 
-        WealthFundSingleException exception = assertThrows(WealthFundSingleException.class, () -> walletService.deleteWallet(userName, walletName));
-        Assertions.assertEquals("This wallet does not exist", exception.getMessage());
-
+        NotExistException exception = assertThrows(NotExistException.class, () -> walletService.deleteWallet(userName, walletName));
+        Assertions.assertEquals("Xtb does not exist, please try again.", exception.getMessage());
     }
 }
 

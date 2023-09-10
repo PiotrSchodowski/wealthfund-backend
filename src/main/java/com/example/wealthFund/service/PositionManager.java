@@ -36,8 +36,7 @@ public class PositionManager {
 
     public PositionManager(PositionRepository positionRepository, WalletRepository walletRepository, TextValidator textValidator,
                            CashService cashService, CalculatePositionService calculatePositionService, WalletService walletService,
-                           ActualizationService actualizationService, UndoPositionMapper undoPositionMapper,
-                           OperationHistoryRepo operationHistoryRepo) {
+                           ActualizationService actualizationService, UndoPositionMapper undoPositionMapper, OperationHistoryRepo operationHistoryRepo) {
         this.positionRepository = positionRepository;
         this.walletRepository = walletRepository;
         this.textValidator = textValidator;
@@ -91,7 +90,7 @@ public class PositionManager {
 
         if (undoPositionDto.getQuantity() < 0) {
             AddPositionDto addPositionDto = undoPositionMapper.UndoPositionDtoToAddPositionDto(undoPositionDto);
-            addPositionDto.setQuantity(undoPositionDto.getQuantity() * -1);
+            addPositionDto.setQuantity(undoPositionDto.getQuantity() * (-1));
             addPositionDto.setTotalValueEntered(undoPositionDto.getValueOperation() * (-1));
 
             calculatePositionService.increasePositionData(positionEntity, addPositionDto);
@@ -129,7 +128,7 @@ public class PositionManager {
         return undoPositionDto;
     }
 
-    private PositionEntity updateSubtractingPosition(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
+    PositionEntity updateSubtractingPosition(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
         if (subtractPositionDto.getQuantity() > positionEntity.getQuantity()) {
             throw new WealthFundSingleException("The quantity entered exceeds the value of the position");
         } else {
@@ -137,14 +136,14 @@ public class PositionManager {
         }
     }
 
-    private PositionEntity returnPositionEntity(WalletEntity walletEntity, UndoPositionDto undoPositionDto) {
+     PositionEntity returnPositionEntity(WalletEntity walletEntity, UndoPositionDto undoPositionDto) {
         return walletEntity.getPositions().stream()
                 .filter(isMatchingSymbolAndCurrency(undoPositionDto.getSymbol(), undoPositionDto.getPositionCurrency()))
                 .findFirst()
                 .orElseThrow(() -> new NotExistException(undoPositionDto.getSymbol()));
     }
 
-    private PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
+    PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
         return walletEntity.getPositions().stream()
                 .filter(isMatchingSymbolAndCurrency(addPositionDto.getSymbol(), addPositionDto.getCurrency()))
                 .findFirst()
@@ -234,7 +233,7 @@ public class PositionManager {
                 .orElse(null);
     }
 
-    private Predicate<PositionEntity> isMatchingSymbolAndCurrency(String symbol, String currency) {
+    Predicate<PositionEntity> isMatchingSymbolAndCurrency(String symbol, String currency) {
         return pos -> pos.getSymbol().equals(symbol) && pos.getUserCurrency().equals(currency);
     }
 }
