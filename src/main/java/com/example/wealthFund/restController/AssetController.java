@@ -5,11 +5,12 @@ import com.example.wealthFund.model.AssetPrice;
 import com.example.wealthFund.model.GlobalQuote;
 import com.example.wealthFund.service.AssetService;
 import com.example.wealthFund.service.ScrapperService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-
+@Tag(name = "4 Asset Management", description = "uploading, updating and deleting assets")
 @RestController
 public class AssetController {
 

@@ -2,11 +2,12 @@ package com.example.wealthFund.restController;
 
 import com.example.wealthFund.dto.UserDto;
 import com.example.wealthFund.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Tag(name = "1 User account management", description = "adding, deleting and getting users")
 @RestController
 public class UserController {
 

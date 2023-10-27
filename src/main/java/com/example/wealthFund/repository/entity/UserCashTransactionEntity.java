@@ -1,8 +1,7 @@
 package com.example.wealthFund.repository.entity;
 
 import lombok.*;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

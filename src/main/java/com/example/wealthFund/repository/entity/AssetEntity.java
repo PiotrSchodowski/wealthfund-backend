@@ -1,8 +1,11 @@
 package com.example.wealthFund.repository.entity;
 
+import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
 
-import javax.persistence.*;
+
 
 @Entity
 @Data

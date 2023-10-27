@@ -5,8 +5,9 @@ import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
 import com.example.wealthFund.dto.positionDtos.UndoPositionDto;
 import com.example.wealthFund.service.PositionManager;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-
+@Tag(name = "5 Position Management", description = "adding, decreasing and undoing positions")
 @RestController
 public class PositionController {
 
