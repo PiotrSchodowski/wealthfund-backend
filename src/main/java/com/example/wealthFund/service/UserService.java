@@ -9,6 +9,7 @@ import com.example.wealthFund.repository.entity.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -20,15 +21,6 @@ public class UserService {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.textValidator = textValidator;
-    }
-
-    public UserDto addNewUser(String userName) {
-        textValidator.checkTextValidity(userName);
-        validateUserExistenceThrowExceptionWhenExist(userName);
-
-        UserDto user = new UserDto(userName);
-        userRepository.save(userMapper.userDtoToUser(user));
-        return user;
     }
 
     public boolean deleteUser(String userName) {
@@ -45,21 +37,22 @@ public class UserService {
         return userDtoList;
     }
 
-    protected UserEntity getUserByName(String userName) {
+    public UserEntity getUserByName(String userName) {
         textValidator.checkTextValidity(userName);
         validateUserExistenceThrowExceptionDoesNotExist(userName);
-        return userRepository.findByName(userName);
+
+        Optional<UserEntity> optionalUserEntity = userRepository.findByName(userName);
+        if (optionalUserEntity.isPresent()) {
+            return optionalUserEntity.get();
+        }else{
+            throw new NotExistException(userName);
+        }
+
     }
 
     protected void validateUserExistenceThrowExceptionDoesNotExist(String userName) {
         if (!userRepository.existsByUserName(userName)) {
             throw new NotExistException(userName);
-        }
-    }
-
-    protected void validateUserExistenceThrowExceptionWhenExist(String userName) {
-        if (userRepository.existsByUserName(userName)) {
-            throw new UserExistException(userName);
         }
     }
 }

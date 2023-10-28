@@ -13,14 +13,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @PostMapping("/users/{name}")
-    public UserDto addNewUser(@PathVariable String name) {
-        return userService.addNewUser(name);
     }
 
     @DeleteMapping("/users/{name}")

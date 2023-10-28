@@ -53,7 +53,7 @@ public class WalletServiceTest {
         Set<WalletEntity> wallets = new HashSet<>();
         userEntity.setWallets(wallets);
 
-        when(userRepository.findByName(userName)).thenReturn(userEntity);
+        when(userService.getUserByName(userName)).thenReturn(userEntity);
         doNothing().when(textValidator).checkTextValidity(anyString());
         when(textValidator.checkAndAdjustCurrencyCode(currency)).thenReturn(currency);
         when(walletRepository.existsByWalletNameAndUserName(walletName, userName)).thenReturn(false);
@@ -75,7 +75,7 @@ public class WalletServiceTest {
         wallets.add(walletEntity);
         userEntity.setWallets(wallets);
 
-        when(userRepository.findByName(userName)).thenReturn(userEntity);
+        when(userService.getUserByName(userName)).thenReturn(userEntity);
         doNothing().when(textValidator).checkTextValidity(anyString());
         doNothing().when(userService).validateUserExistenceThrowExceptionDoesNotExist(userName);
 
@@ -100,7 +100,7 @@ public class WalletServiceTest {
         wallets.add(walletEntity);
         userEntity.setWallets(wallets);
 
-        when(userRepository.findByName(userName)).thenReturn(userEntity);
+        when(userService.getUserByName(userName)).thenReturn(userEntity);
 
         NotExistException exception = assertThrows(NotExistException.class, () -> walletService.deleteWallet(userName, walletName));
         Assertions.assertEquals("Xtb does not exist, please try again.", exception.getMessage());

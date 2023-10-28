@@ -33,7 +33,7 @@ public class WalletService {
         userService.validateUserExistenceThrowExceptionDoesNotExist(userName);
         validateUniqueWalletName(userName, walletName);
 
-        UserEntity userEntity = userRepository.findByName(userName);
+        UserEntity userEntity = userService.getUserByName(userName);
         WalletEntity walletEntity = createWallet(walletName, currency, userEntity);
         saveWalletWithUser(walletEntity, userEntity);
 
@@ -45,7 +45,7 @@ public class WalletService {
         textValidator.checkTextValidity(userName, walletName);
         userService.validateUserExistenceThrowExceptionDoesNotExist(userName);
 
-        UserEntity userEntity = userRepository.findByName(userName);
+        UserEntity userEntity = userService.getUserByName(userName);
         Set<WalletEntity> wallets = userEntity.getWallets();
         WalletEntity walletToRemove = findWalletByName(wallets, walletName);
         wallets.remove(walletToRemove);

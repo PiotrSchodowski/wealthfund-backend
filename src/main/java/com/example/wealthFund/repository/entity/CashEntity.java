@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "cash")
 public class CashEntity {
 
     @Id

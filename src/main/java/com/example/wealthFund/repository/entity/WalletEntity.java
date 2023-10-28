@@ -1,5 +1,7 @@
 package com.example.wealthFund.repository.entity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -12,14 +14,21 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "wallets")
 public class WalletEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NotBlank
+    @Size(max = 20)
     private String name;
+
+    @NotBlank
+    @Size(max = 20)
     private String currency;
+
     private float basicValue;
     private float actualValue;
 
