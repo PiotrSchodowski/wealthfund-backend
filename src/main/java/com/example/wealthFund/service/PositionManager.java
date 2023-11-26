@@ -12,9 +12,11 @@ import com.example.wealthFund.repository.WalletRepository;
 import com.example.wealthFund.repository.entity.OperationHistory;
 import com.example.wealthFund.repository.entity.PositionEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +87,8 @@ public class PositionManager {
     public UndoPositionDto undoOperation(String userName, String walletName, Long id) {
 
         WalletEntity walletEntity = walletService.getWalletEntity(userName, walletName);
+
+
         UndoPositionDto undoPositionDto = deleteOperationHistory(walletEntity, id);
         PositionEntity positionEntity = returnPositionEntity(walletEntity, undoPositionDto);
 
@@ -97,6 +101,7 @@ public class PositionManager {
             cashService.withdrawCash(walletEntity, addPositionDto.getTotalValueEntered());
         } else {
             SubtractPositionDto subtractPositionDto = undoPositionMapper.UndoPositionDtoToSubtractPositionDto(undoPositionDto);
+            positionEntity.setAveragePurchasePrice(undoPositionDto.getAveragePrice());
             calculatePositionService.decreasePositionData(positionEntity, subtractPositionDto);
             cashService.depositCash(walletEntity.getCashEntity(), undoPositionDto.getValueOperation());
         }
@@ -119,7 +124,14 @@ public class PositionManager {
 
 
         UndoPositionDto undoPositionDto = undoPositionMapper.operationHistoryToUndoPositionDto(historyToDelete);
+
         operationHistories.remove(historyToDelete);
+
+        undoPositionDto.setAveragePrice((float) operationHistories.stream()
+                .filter(history -> history.getValueOperation() > 0)
+                .mapToDouble(history -> history.getPrice())
+                .average()
+                .orElse(0.0));
         walletEntity.setOperationHistories(operationHistories);
 
         operationHistoryRepo.deleteById(id);
@@ -136,14 +148,14 @@ public class PositionManager {
         }
     }
 
-     PositionEntity returnPositionEntity(WalletEntity walletEntity, UndoPositionDto undoPositionDto) {
+    PositionEntity returnPositionEntity(WalletEntity walletEntity, UndoPositionDto undoPositionDto) {
         return walletEntity.getPositions().stream()
                 .filter(isMatchingSymbolAndCurrency(undoPositionDto.getSymbol(), undoPositionDto.getPositionCurrency()))
                 .findFirst()
                 .orElseThrow(() -> new NotExistException(undoPositionDto.getSymbol()));
     }
 
-    PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
+    public PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
         return walletEntity.getPositions().stream()
                 .filter(isMatchingSymbolAndCurrency(addPositionDto.getSymbol(), addPositionDto.getCurrency()))
                 .findFirst()
@@ -235,5 +247,9 @@ public class PositionManager {
 
     Predicate<PositionEntity> isMatchingSymbolAndCurrency(String symbol, String currency) {
         return pos -> pos.getSymbol().equals(symbol) && pos.getUserCurrency().equals(currency);
+    }
+
+    public ResponseEntity<?> getPosition(int id) {
+        return ResponseEntity.ok(positionRepository.findById((long) id));
     }
 }

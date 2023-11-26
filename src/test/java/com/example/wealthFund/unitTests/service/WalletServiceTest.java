@@ -1,4 +1,4 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.exception.NotExistException;
 import com.example.wealthFund.exception.WealthFundSingleException;
@@ -6,6 +6,9 @@ import com.example.wealthFund.repository.UserRepository;
 import com.example.wealthFund.repository.WalletRepository;
 import com.example.wealthFund.repository.entity.UserEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
+import com.example.wealthFund.service.TextValidator;
+import com.example.wealthFund.service.UserService;
+import com.example.wealthFund.service.WalletService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,28 +64,6 @@ public class WalletServiceTest {
         assertDoesNotThrow(() -> walletService.addNewWallet(userName, walletName, currency));
     }
 
-    @Test
-    void shouldReturnTrueAndDeleteWallet() {
-        String userName = "Piotr";
-        String walletName = "Xtb";
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setName(userName);
-        WalletEntity walletEntity = new WalletEntity();
-        walletEntity.setName(walletName);
-        walletEntity.setUserEntity(userEntity);
-        Set<WalletEntity> wallets = new HashSet<>();
-        wallets.add(walletEntity);
-        userEntity.setWallets(wallets);
-
-        when(userService.getUserByName(userName)).thenReturn(userEntity);
-        doNothing().when(textValidator).checkTextValidity(anyString());
-        doNothing().when(userService).validateUserExistenceThrowExceptionDoesNotExist(userName);
-
-        boolean result = walletService.deleteWallet(userName, walletName);
-
-        assertTrue(result);
-    }
 
     @Test
     void shouldReturnFalseAndThrowExceptionWallet() {

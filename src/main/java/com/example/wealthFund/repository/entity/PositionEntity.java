@@ -26,6 +26,7 @@ public class PositionEntity {
     private float valueBasedOnPurchasePrice;
     private float averagePurchasePrice;
     private float actualPrice;
+    private float dailyPriceChange; // in %
     private LocalDateTime actualPriceDate;
     private float valueOfPosition;
     private float percentageOfThePortfolio;

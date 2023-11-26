@@ -1,4 +1,4 @@
-package com.example.wealthFund.controllerTests;
+package com.example.wealthFund.unitTests.controllerTests;
 
 import com.example.wealthFund.dto.AssetDto;
 import com.example.wealthFund.model.GlobalQuote;
@@ -33,7 +33,9 @@ public class AssetControllerTest {
     private final float price = 150.0f;
     private final String exchange = "NASDAQ";
     private final String assetType = "Stock";
-    private final AssetDto assetDto = new AssetDto(name, symbol, currency, price, exchange, assetType);
+
+    private final float dailyPriceChange = 0;
+    private final AssetDto assetDto = new AssetDto(name, symbol, currency, price, exchange, assetType, dailyPriceChange);
 
     @Test
     public void shouldEntryManualAsset() {

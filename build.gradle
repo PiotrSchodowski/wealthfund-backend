@@ -46,10 +46,19 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.jsoup:jsoup:1.14.3'
 
-    // testy
-    testImplementation 'junit:junit:4.12'
+    // tests
     testImplementation 'org.assertj:assertj-core:3.23.1'
     testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'com.google.truth:truth:1.1.5'
+
+    testImplementation "org.testcontainers:testcontainers:1.19.2"
+    testImplementation 'org.testcontainers:mysql:1.19.2'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.2'
+
+
+
+
 
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
@@ -66,6 +75,8 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 tasks.named('test') {

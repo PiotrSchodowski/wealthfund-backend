@@ -12,4 +12,6 @@ public interface WalletRepository extends JpaRepository<WalletEntity,Long> {
     @Query("SELECT CASE WHEN COUNT(w) > 0 THEN true ELSE false END FROM WalletEntity w WHERE w.name = :name AND w.userEntity.name = :userName")
     boolean existsByWalletNameAndUserName(@Param("name") String name, @Param("userName") String userName);
 
+
+
 }

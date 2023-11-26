@@ -1,7 +1,8 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.exception.WealthFundSingleException;
 import com.example.wealthFund.model.AssetPrice;
+import com.example.wealthFund.service.ScrapperService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -14,6 +14,7 @@ public class TextValidator {
     public AddPositionDto validateAddPosition(String userName, String walletName, AddPositionDto addPositionDto){
         checkTextValidity(userName, walletName);
         checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getCommission());
+        addPositionDto.setSymbol(addPositionDto.getSymbol().toUpperCase(Locale.ROOT));
         addPositionDto.setCurrency(checkAndAdjustCurrencyCode(addPositionDto.getCurrency()));
         return addPositionDto;
     }
@@ -89,7 +90,7 @@ public class TextValidator {
         int decimalIndex = numberString.indexOf('.');
         if (decimalIndex != -1) {
             int precision = numberString.length() - decimalIndex - 1;
-            if (precision > 2) {
+            if (precision > 3) {
                 throw new PrecisionException();
             }
         }

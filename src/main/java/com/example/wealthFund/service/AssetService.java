@@ -11,6 +11,7 @@ import com.example.wealthFund.model.GlobalQuote;
 import com.example.wealthFund.model.GlobalQuoteData;
 import com.example.wealthFund.repository.AssetRepository;
 import com.example.wealthFund.repository.entity.AssetEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AssetService {
     private final AssetRepository assetRepository;
     private final CryptocurrencyService cryptocurrencyService;
@@ -25,22 +27,13 @@ public class AssetService {
     private final AssetDirectoryService assetDirectoryService;
     private final FileCsvToAssetDirectoryMapper fileCsvToAssetDirectoryMapper;
     private final ScrapperService scrapperService;
+    private final CurrencyService currencyService;
 
-    public AssetService(AssetRepository assetRepository, CryptocurrencyService cryptocurrencyService,
-                        AssetMapper assetMapper, AssetDirectoryService assetDirectoryService,
-                        FileCsvToAssetDirectoryMapper fileCsvToAssetDirectoryMapper, ScrapperService scrapperService) {
-        this.assetRepository = assetRepository;
-        this.cryptocurrencyService = cryptocurrencyService;
-        this.assetMapper = assetMapper;
-        this.assetDirectoryService = assetDirectoryService;
-        this.fileCsvToAssetDirectoryMapper = fileCsvToAssetDirectoryMapper;
-        this.scrapperService = scrapperService;
-    }
 
     public AssetDto createAssetFromManualEntry(AssetDto assetDto) {
         Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(assetDto.getSymbol());
         if (assetEntityOptional.isPresent()) {
-            throw new NotExistException(assetDto.getSymbol());
+            throw new WealthFundSingleException("Asset with symbol " + assetDto.getSymbol() + " already exists");
         } else {
             assetRepository.save(assetMapper.assetDtoToAssetEntity(assetDto));
             return assetDto;
@@ -70,7 +63,7 @@ public class AssetService {
         }
     }
 
-    public AssetEntity getAssetEntityBySymbolAndExchange(String symbol, String exchange) { //todo nie wiem jak to testowac
+    public AssetEntity getAssetEntityBySymbolAndExchange(String symbol, String exchange) {
 
         return assetRepository.findBySymbolAndExchange(symbol, exchange)
                 .orElseThrow(() -> new WealthFundSingleException("Asset with symbol " + symbol + " and exchange " + exchange + " not found"));
@@ -82,6 +75,7 @@ public class AssetService {
         for (Cryptocurrency cryptocurrency : cryptocurrencies) {
             AssetEntity assetEntity;
             assetEntity = assetMapper.cryptocurrencyToAssetEntity(cryptocurrency);
+            assetEntity.setSymbol(cryptocurrency.getSymbol().toUpperCase());
             assetEntities.add(assetEntity);
         }
         assetRepository.saveAll(assetEntities);
@@ -116,36 +110,49 @@ public class AssetService {
         }
     }
 
-    public AssetEntity setPriceIfThereIsNone(AssetEntity assetEntity) {
-        float price = assetEntity.getPrice();
+    public AssetEntity setAssetPrice(AssetEntity assetEntity) {
+        AssetDto assetDto = new AssetDto();
+        assetDto.setSymbol(assetEntity.getSymbol());
+        assetDto.setName(assetEntity.getName());
 
-        if (price == 0) {
-            String exchange = assetEntity.getExchange().toUpperCase();
-            String symbol = assetEntity.getSymbol();
+        assetDto = switch (assetEntity.getExchange()) {
+            case "GPW" -> scrapperService.actualizeGpwAsset(assetDto);
+            case "none" -> scrapperService.actualizeCryptoAsset(assetDto);
+            case "NASDAQ", "BATS", "NYSE", "NYSE ARCA", "NYSE MKT" -> scrapperService.actualizeUsaAsset(assetDto);
+            default -> assetDto;
+        };
 
-            switch (exchange) {
-                case "GPW":
-                    price = (float) scrapperService.getAssetPriceBySymbol(symbol).getPrice();
-                    break;
-                case "NONE":
-                    price = cryptocurrencyService.getCryptocurrencyBySymbol(symbol).getPrice();
-                    break;
-                case "NASDAQ":
-                case "BATS":
-                case "NYSE":
-                case "NYSE ARCA":
-                case "NYSE MKT":
-                    GlobalQuote globalQuote = assetDirectoryService.getGlobalQuoteFromUsaAsset(symbol);
-                    price = globalQuote.getGlobalQuoteData().getPrice();
-                    break;
-            }
-
-            assetEntity.setPrice(price);
-        }
+        assetEntity.setPrice(assetDto.getPrice());
 
         return assetEntity;
     }
 
+    public AssetDto actualizeAsset(AssetDto assetDto) {
+
+        switch (assetDto.getExchange()) {
+            case "GPW":
+                assetDto = scrapperService.actualizeGpwAsset(assetDto);
+                break;
+            case "none":
+                assetDto = scrapperService.actualizeCryptoAsset(assetDto);
+                break;
+            case "NASDAQ":
+            case "BATS":
+            case "NYSE":
+            case "NYSE ARCA":
+            case "NYSE MKT":
+                assetDto = scrapperService.actualizeUsaAsset(assetDto);
+                break;
+        }
+        return assetDto;
+    }
+
+
+    public List<AssetDto> getAllAssets() {
+        List<AssetEntity> assetEntities = assetRepository.findAll();
+        return assetMapper.assetListToAssetDtoList(assetEntities);
+
+    }
 }
 
 

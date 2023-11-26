@@ -1,9 +1,12 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.dto.positionDtos.AddPositionDto;
 import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
 import com.example.wealthFund.repository.entity.AssetEntity;
 import com.example.wealthFund.repository.entity.PositionEntity;
+import com.example.wealthFund.service.AssetService;
+import com.example.wealthFund.service.CalculatePositionService;
+import com.example.wealthFund.service.CurrencyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -74,7 +77,7 @@ public class CalculatePositionServiceTest {
         assetEntity.setPrice(10);
 
         when(assetService.getAssetEntityBySymbolAndExchange(anyString(), anyString())).thenReturn(new AssetEntity());
-        when(assetService.setPriceIfThereIsNone(any())).thenReturn(assetEntity);
+        when(assetService.setAssetPrice(any())).thenReturn(assetEntity);
 
         PositionEntity result = calculatePositionService.increasePositionData(positionEntity, addPositionDto);
 

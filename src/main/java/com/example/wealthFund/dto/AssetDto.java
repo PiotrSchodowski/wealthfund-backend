@@ -17,4 +17,5 @@ public class AssetDto {
     private float price;
     private String exchange;
     private String assetType;
+    private float dailyPriceChange;
 }

@@ -1,7 +1,8 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.model.Currency;
 import com.example.wealthFund.model.Rates;
+import com.example.wealthFund.service.CurrencyService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

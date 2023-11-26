@@ -12,4 +12,5 @@ public class UndoPositionDto {
     private String walletName;
     private String exchange;
     private float valueOperation;
+    private float averagePrice;
 }

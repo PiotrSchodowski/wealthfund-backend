@@ -1,8 +1,12 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.dto.positionDtos.AddPositionDto;
 import com.example.wealthFund.repository.entity.PositionEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
+import com.example.wealthFund.service.CalculatePositionService;
+import com.example.wealthFund.service.PositionManager;
+import com.example.wealthFund.service.TextValidator;
+import com.example.wealthFund.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,7 +41,7 @@ public class PositionManagerTest {
     }
 
     @Test
-    void shouldReturnAddPositionDtoWhenAddingPosition() {  //todo mam problem z tym testem chodzi o : findPositionBySymbolAndCurrency and isMatchingSymbolAndCurrency , nie bardzo wiem jak to testowac
+    void shouldReturnAddPositionDtoWhenAddingPosition() {
 
         AddPositionDto addPositionDto = new AddPositionDto();
         addPositionDto.setSymbol("BTC");
@@ -67,8 +71,6 @@ public class PositionManagerTest {
         when(positionManager.returnPositionEntity(walletEntity,addPositionDto)).thenReturn((positionEntity));
         when(walletEntity.getPositions()).thenReturn(positions);
         when(calculatePositionService.increasePositionData(positionEntity, addPositionDto)).thenReturn(positionEntity);
-
-
 
         AddPositionDto result = positionManager.addPosition(userName, walletName, addPositionDto);
 

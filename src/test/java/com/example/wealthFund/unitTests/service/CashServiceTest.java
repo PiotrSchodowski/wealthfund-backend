@@ -1,9 +1,10 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.exception.InsufficientFundsException;
 import com.example.wealthFund.exception.TextNotAcceptableLengthException;
 import com.example.wealthFund.repository.entity.CashEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
+import com.example.wealthFund.service.CashService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

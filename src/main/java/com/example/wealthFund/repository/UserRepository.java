@@ -16,8 +16,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserEntity u WHERE u.name = :name")
     boolean existsByUserName(@Param("name") String name);
 
-//    UserEntity findByName(String name);
-
     @Transactional
     @Modifying
     int deleteByName(@Param("name") String name);

@@ -2,10 +2,10 @@ package com.example.wealthFund.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 
-@RestControllerAdvice
+
+@ControllerAdvice
 public class WealthFundExceptionHandler {
 
     @ExceptionHandler(WealthFundSingleException.class)
@@ -22,6 +22,7 @@ public class WealthFundExceptionHandler {
     public ResponseEntity<String> handleTextNotAcceptableLengthException(TextNotAcceptableLengthException ex) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
+
 
     @ExceptionHandler(ContainsWhiteSpacesException.class)
     public ResponseEntity<String> handleContainsWhiteSpacesException(ContainsWhiteSpacesException ex) {

@@ -1,4 +1,4 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.dto.AssetDto;
 import com.example.wealthFund.exception.NotExistException;
@@ -8,6 +8,10 @@ import com.example.wealthFund.mapper.FileCsvToAssetDirectoryMapper;
 import com.example.wealthFund.model.*;
 import com.example.wealthFund.repository.AssetRepository;
 import com.example.wealthFund.repository.entity.AssetEntity;
+import com.example.wealthFund.service.AssetDirectoryService;
+import com.example.wealthFund.service.AssetService;
+import com.example.wealthFund.service.CryptocurrencyService;
+import com.example.wealthFund.service.ScrapperService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -75,7 +79,7 @@ class AssetServiceTest {
 
         when(cryptocurrencyService.getCryptocurrencyBySymbol("BTC")).thenReturn(cryptocurrency);
 
-        AssetEntity updatedAssetEntity = assetService.setPriceIfThereIsNone(assetEntity);
+        AssetEntity updatedAssetEntity = assetService.setAssetPrice(assetEntity);
 
         assertEquals(50000, updatedAssetEntity.getPrice());
     }
@@ -93,7 +97,7 @@ class AssetServiceTest {
 
         when(scrapperService.getAssetPriceBySymbol("PKO")).thenReturn(stockPrice);
 
-        AssetEntity updatedAssetEntity = assetService.setPriceIfThereIsNone(assetEntity);
+        AssetEntity updatedAssetEntity = assetService.setAssetPrice(assetEntity);
 
 
         assertEquals(150, updatedAssetEntity.getPrice());
@@ -113,7 +117,7 @@ class AssetServiceTest {
 
         when(assetDirectoryService.getGlobalQuoteFromUsaAsset("MSFT")).thenReturn(globalQuote);
 
-        AssetEntity updatedAssetEntity = assetService.setPriceIfThereIsNone(assetEntity);
+        AssetEntity updatedAssetEntity = assetService.setAssetPrice(assetEntity);
 
         assertEquals(300, updatedAssetEntity.getPrice());
     }

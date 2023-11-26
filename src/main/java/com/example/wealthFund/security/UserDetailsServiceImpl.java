@@ -13,9 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    /*** - Interfejs UserDetailsService ma metodę ładowania użytkownika według nazwy użytkownika i zwraca obiekt UserDetails,
-     * którego Spring Security może używać do uwierzytelniania i walidacji.
-     - UserDetails zawiera niezbędne informacje (takie jak: nazwa użytkownika, hasło, władze) do zbudowania obiektu Authentication. ***/
     @Autowired
     UserRepository userRepository;
 

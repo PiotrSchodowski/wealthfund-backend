@@ -40,18 +40,23 @@ public class WalletEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private CashEntity cashEntity;
 
-    @ElementCollection
-    @OneToMany(cascade = {CascadeType.ALL})
+    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Set<PositionEntity> positions;
 
-    @ElementCollection
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinColumn(name = "wallet_id")
     private List<UserCashTransactionEntity> userTransactions;
 
-    @ElementCollection
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinColumn(name = "wallet_id")
     private List<OperationHistory> operationHistories;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "wallet_id")
+    private List<WalletValueHistory> walletValueHistories;
 
 }

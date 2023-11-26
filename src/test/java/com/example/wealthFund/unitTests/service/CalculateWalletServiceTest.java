@@ -1,9 +1,10 @@
-package com.example.wealthFund.service;
+package com.example.wealthFund.unitTests.service;
 
 import com.example.wealthFund.repository.entity.CashEntity;
 import com.example.wealthFund.repository.entity.PositionEntity;
 import com.example.wealthFund.repository.entity.UserCashTransactionEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
+import com.example.wealthFund.service.CalculateWalletService;
 import org.junit.Before;
 import org.junit.Test;
 

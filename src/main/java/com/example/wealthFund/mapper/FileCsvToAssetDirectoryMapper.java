@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class FileCsvToAssetDirectoryMapper {
 
@@ -37,7 +38,7 @@ public class FileCsvToAssetDirectoryMapper {
                 String symbol = line[11];
                 if (!symbol.isEmpty()) {
                     AssetDirectory gpwAsset = new AssetDirectory();
-                    gpwAsset.setName(line[10]);
+                    gpwAsset.setName(formatAssetName(line[10]));
                     gpwAsset.setSymbol(symbol);
                     gpwAsset.setCurrency(line[18]);
                     gpwAsset.setAssetType("Stock");
@@ -50,5 +51,11 @@ public class FileCsvToAssetDirectoryMapper {
         }
         return gpwAssets;
     }
+
+    private String formatAssetName(String originalName) {
+        return Character.toUpperCase(originalName.charAt(0)) + originalName.substring(1).toLowerCase();
+    }
+
+
 }
 
