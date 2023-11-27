@@ -20,7 +20,8 @@ public class TestConfig {
 
     @DynamicPropertySource
     static void registerDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", () -> String.format("jdbc:tc:mysql://localhost:%s/%s", mySQLContainer.getFirstMappedPort(), mySQLContainer.getDatabaseName()));
+        registry.add("spring.datasource.url", () -> String.format("jdbc:tc:mysql://localhost:%s/%s",
+                mySQLContainer.getFirstMappedPort(), mySQLContainer.getDatabaseName()));
         registry.add("spring.datasource.username", () -> mySQLContainer.getUsername());
         registry.add("spring.datasource.password", () -> mySQLContainer.getPassword());
     }

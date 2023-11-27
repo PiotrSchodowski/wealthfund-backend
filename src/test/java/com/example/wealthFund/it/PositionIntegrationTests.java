@@ -17,7 +17,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Testcontainers
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {WealthFundApplication.class, TestConfig.class})
-public class Position_IT {
+public class PositionIntegrationTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -31,16 +31,23 @@ public class Position_IT {
     @Autowired
     TestHelper testHelper;
 
-    public Position_IT() throws JsonProcessingException {
-    }
+    @Autowired
+    WalletControllerMock walletControllerMock;
+
+    @Autowired
+    CashControllerMock cashControllerMock;
+
+    @Autowired
+    AssetControllerMock assetControllerMock;
+
+    @Autowired
+    PositionControllerMock positionControllerMock;
 
     @AfterEach
     public void clearDB() {
         userRepository.deleteAll();
     }
 
-    String walletName = "xtb";
-    float valueOfDeposit = 1000;
     AddPositionDto addPositionDto = AddPositionDto.builder()
             .symbol("ALE")
             .exchange("GPW")
@@ -52,13 +59,14 @@ public class Position_IT {
             .isPercentageCommission(false)
             .build();
 
-
     @Test
     void scenarioAddPosition() throws Exception {
 
-        testHelper.addPosition(walletName, valueOfDeposit, addPositionDto);
+        walletControllerMock.addNewWallet(testHelper.walletNameXtb);
+        cashControllerMock.depositCashIntoTheWallet(testHelper.walletNameXtb, testHelper.valueOfDeposit1000);
+        assetControllerMock.addGpwAssets();
+        positionControllerMock.addPosition(testHelper.walletNameXtb, addPositionDto);
 
-        //noinspection OptionalGetWithoutIsPresent
         assertThat(positionRepository.findById(1L).get().getSymbol()).isEqualTo(addPositionDto.getSymbol());
         assertThat(positionRepository.findById(1L).get().getName()).isEqualTo("Allegro");
         assertThat(positionRepository.findById(1L).get().getQuantity()).isEqualTo(addPositionDto.getQuantity());
