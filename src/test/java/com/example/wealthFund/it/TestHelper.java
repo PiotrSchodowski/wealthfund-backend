@@ -24,6 +24,7 @@ public class TestHelper {
     String walletNameXtb = "xtb";
     String userNamePiotr = "Piotr";
     float valueOfDeposit1000 = 1000;
+    float valueOfDepositNegative = -1000;
 
     public String getToken() {
 

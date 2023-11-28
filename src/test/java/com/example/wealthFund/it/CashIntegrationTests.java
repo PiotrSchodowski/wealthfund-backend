@@ -65,4 +65,16 @@ public class CashIntegrationTests {
         cashControllerMock.depositCashIntoTheWallet(testHelper.walletNameXtb, testHelper.valueOfDeposit1000);
         cashControllerMock.withdrawCashFromTheWalletAndExpectNotAcceptable(valueCannotWithdraw);
     }
+
+    @Test
+    void scenarioCashCannotWithdrawWhenWalletIsEmpty() throws Exception {
+        walletControllerMock.addNewWallet(testHelper.walletNameXtb);
+        cashControllerMock.withdrawCashFromTheWalletAndExpectNotAcceptable(valueCannotWithdraw);
+    }
+
+    @Test
+    void scenarioCashCannotDepositWhenValueIsNegative() throws Exception {
+        walletControllerMock.addNewWallet(testHelper.walletNameXtb);
+        cashControllerMock.depositCashIntoTheWalletAndExpectNotAcceptable(testHelper.valueOfDepositNegative);
+    }
 }

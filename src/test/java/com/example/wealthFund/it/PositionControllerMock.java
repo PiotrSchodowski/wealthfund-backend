@@ -1,6 +1,7 @@
 package com.example.wealthFund.it;
 
 import com.example.wealthFund.dto.positionDtos.AddPositionDto;
+import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,33 @@ public class PositionControllerMock {
     @Autowired
     TestHelper testHelper;
 
-    public void addPosition(String walletName, AddPositionDto addPositionDto) throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper();
 
+    public void addPosition(AddPositionDto addPositionDto) throws Exception {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String addPositionDtoJson = objectMapper.writeValueAsString(addPositionDto);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + walletName + "/position")
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(addPositionDtoJson))
+                        .content(objectMapper.writeValueAsString(addPositionDto)))
+                .andExpect(status().isOk());
+    }
+
+    public void addPositionAndExpectNotAcceptable(AddPositionDto addPositionDto) throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
+                        .header("Authorization", "Bearer " + testHelper.getToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(addPositionDto)))
+                .andExpect(status().isNotAcceptable());
+
+    }
+
+    public void subtractPosition(SubtractPositionDto subtractPositionDto) throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/decrease")
+                        .header("Authorization", "Bearer " + testHelper.getToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(subtractPositionDto)))
                 .andExpect(status().isOk());
     }
 

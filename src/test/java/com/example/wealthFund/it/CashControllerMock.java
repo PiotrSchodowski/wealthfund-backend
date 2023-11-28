@@ -44,4 +44,11 @@ public class CashControllerMock {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotAcceptable());
     }
+
+    public void depositCashIntoTheWalletAndExpectNotAcceptable(float valueOfDeposit) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/cashDeposit/" + valueOfDeposit)
+                        .header("Authorization", "Bearer " + testHelper.getToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotAcceptable());
+    }
 }

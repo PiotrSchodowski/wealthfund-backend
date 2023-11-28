@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Objects;
@@ -56,17 +55,17 @@ public class WalletControllerMock {
                 .andExpect(status().isOk());
     }
 
-    public ResultActions getWallets() throws Exception {
+    public String getWallets() throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get("/user/Piotr/wallets")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
     }
 
-    public ResultActions getWallet() throws Exception {
+    public String getWallet() throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get("/user/Piotr/wallets/" + testHelper.walletNameXtb)
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
     }
 }

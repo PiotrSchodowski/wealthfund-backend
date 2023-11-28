@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.stream.Stream;
@@ -72,8 +71,7 @@ public class WalletIntegrationTests {
         walletControllerMock.addNewWallet(testHelper.walletNameXtb);
         walletControllerMock.addNewWallet("ing");
         walletControllerMock.addNewWallet("ledger");
-        ResultActions resultActions = walletControllerMock.getWallets();
-        assertThat(resultActions.andReturn().getResponse().getContentAsString()).contains(testHelper.walletNameXtb, "ing", "ledger");
+        assertThat(walletControllerMock.getWallets()).contains(testHelper.walletNameXtb, "ing", "ledger");
     }
 
     @Test
@@ -81,8 +79,7 @@ public class WalletIntegrationTests {
         walletControllerMock.addNewWallet(testHelper.walletNameXtb);
         walletControllerMock.addNewWallet("ing");
         walletControllerMock.addNewWallet("ledger");
-        ResultActions resultActions = walletControllerMock.getWallet();
-        assertThat(resultActions.andReturn().getResponse().getContentAsString()).contains(testHelper.walletNameXtb);
+        assertThat(walletControllerMock.getWallet()).contains(testHelper.walletNameXtb);
     }
 
     private static Stream<String> invalidWalletNames() {
