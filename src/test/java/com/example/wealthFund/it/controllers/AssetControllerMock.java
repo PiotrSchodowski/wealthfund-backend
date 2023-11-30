@@ -1,5 +1,6 @@
-package com.example.wealthFund.it;
+package com.example.wealthFund.it.controllers;
 
+import com.example.wealthFund.it.TestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;

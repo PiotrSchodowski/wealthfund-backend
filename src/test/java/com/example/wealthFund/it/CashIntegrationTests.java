@@ -1,10 +1,11 @@
 package com.example.wealthFund.it;
 
 import com.example.wealthFund.WealthFundApplication;
+import com.example.wealthFund.it.controllers.CashControllerMock;
+import com.example.wealthFund.it.controllers.WalletControllerMock;
 import com.example.wealthFund.repository.CashRepository;
 import com.example.wealthFund.repository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,12 +38,18 @@ public class CashIntegrationTests {
     @Autowired
     CashControllerMock cashControllerMock;
 
+    @BeforeEach
+    public void setDB() {
+       testHelper.createUser();
+    }
+
     @AfterEach
     public void clearDB() {
         userRepository.deleteAll();
     }
 
     float valueCannotWithdraw = 1001;
+
 
     @Test
     void scenarioCashDeposit() throws Exception {

@@ -12,6 +12,7 @@ import com.example.wealthFund.repository.WalletRepository;
 import com.example.wealthFund.repository.entity.OperationHistory;
 import com.example.wealthFund.repository.entity.PositionEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 @Service
+@RequiredArgsConstructor
 public class PositionManager {
 
     private final PositionRepository positionRepository;
@@ -36,19 +38,6 @@ public class PositionManager {
     private final OperationHistoryRepo operationHistoryRepo;
     private final UndoPositionMapper undoPositionMapper;
 
-    public PositionManager(PositionRepository positionRepository, WalletRepository walletRepository, TextValidator textValidator,
-                           CashService cashService, CalculatePositionService calculatePositionService, WalletService walletService,
-                           ActualizationService actualizationService, UndoPositionMapper undoPositionMapper, OperationHistoryRepo operationHistoryRepo) {
-        this.positionRepository = positionRepository;
-        this.walletRepository = walletRepository;
-        this.textValidator = textValidator;
-        this.cashService = cashService;
-        this.calculatePositionService = calculatePositionService;
-        this.walletService = walletService;
-        this.actualizationService = actualizationService;
-        this.operationHistoryRepo = operationHistoryRepo;
-        this.undoPositionMapper = undoPositionMapper;
-    }
 
     public AddPositionDto addPosition(String userName, String walletName, AddPositionDto addPositionDto) {
         addPositionDto = textValidator.validateAddPosition(userName, walletName, addPositionDto);
@@ -87,8 +76,6 @@ public class PositionManager {
     public UndoPositionDto undoOperation(String userName, String walletName, Long id) {
 
         WalletEntity walletEntity = walletService.getWalletEntity(userName, walletName);
-
-
         UndoPositionDto undoPositionDto = deleteOperationHistory(walletEntity, id);
         PositionEntity positionEntity = returnPositionEntity(walletEntity, undoPositionDto);
 
@@ -183,7 +170,7 @@ public class PositionManager {
 
         return OperationHistory.builder()
                 .symbol(positionEntity.getSymbol())
-                .price(addPositionDto.getPrice())
+                .price(addPositionDto.getTotalValueEntered() / addPositionDto.getQuantity())
                 .quantity(addPositionDto.getQuantity())
                 .walletCurrency(positionEntity.getWalletCurrency())
                 .positionCurrency(positionEntity.getUserCurrency())

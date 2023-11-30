@@ -3,10 +3,14 @@ package com.example.wealthFund.it;
 import com.example.wealthFund.WealthFundApplication;
 import com.example.wealthFund.dto.positionDtos.AddPositionDto;
 import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
+import com.example.wealthFund.it.controllers.AssetControllerMock;
+import com.example.wealthFund.it.controllers.CashControllerMock;
+import com.example.wealthFund.it.controllers.PositionControllerMock;
+import com.example.wealthFund.it.controllers.WalletControllerMock;
 import com.example.wealthFund.repository.PositionRepository;
 import com.example.wealthFund.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,6 +49,12 @@ public class PositionIntegrationTests {
     @Autowired
     PositionControllerMock positionControllerMock;
 
+    @BeforeEach
+    public void setDB() throws Exception {
+        testHelper.createUser();
+        addWalletDepositCashAndDownloadAssets();
+    }
+
     @AfterEach
     public void clearDB() {
         userRepository.deleteAll();
@@ -71,7 +81,6 @@ public class PositionIntegrationTests {
 
     @Test
     void scenarioAddPosition() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         positionControllerMock.addPosition(addPositionDto);
 
         assertThat(positionRepository.findById(1L).get().getSymbol()).isEqualTo(addPositionDto.getSymbol());
@@ -92,70 +101,60 @@ public class PositionIntegrationTests {
 
     @Test
     void scenarioAddPositionWithWrongExchangeAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setExchange("NASDAQ");
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenNotEnoughCashAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setQuantity(1000);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenQuantityIsNegativeAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setQuantity(-1);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenPriceIsNegativeAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setPrice(-1);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenOpeningCurrencyRateIsNegativeAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setOpeningCurrencyRate(-1);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenCommissionIsNegativeAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setCommission(-1);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenQuantityIsZeroAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setQuantity(0);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenPriceIsZeroAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setPrice(0);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioAddPositionWhenOpeningCurrencyRateIsZeroAndExpectNotAcceptable() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         addPositionDto.setOpeningCurrencyRate(0);
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
     @Test
     void scenarioSubtractWholePosition() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         positionControllerMock.addPosition(addPositionDto);
         positionControllerMock.subtractPosition(subtractPositionDto);
 
@@ -164,7 +163,6 @@ public class PositionIntegrationTests {
 
     @Test
     void scenarioSubtractPartOfPosition() throws Exception {
-        addWalletDepositCashAndDownloadAssets();
         positionControllerMock.addPosition(addPositionDto);
         subtractPositionDto.setQuantity(5);
         positionControllerMock.subtractPosition(subtractPositionDto);
@@ -173,6 +171,34 @@ public class PositionIntegrationTests {
         assertThat(positionRepository.findById(1L).get().getValueBasedOnPurchasePrice()).isEqualTo(152.5f);
         assertThat(positionRepository.findById(1L).get().getAveragePurchasePrice()).isEqualTo(30.5f);
     }
+
+    @Test
+    void scenarioSubtractPositionWhenQuantityIsTooBigAndExpectNotAcceptable() throws Exception {
+        positionControllerMock.addPosition(addPositionDto);
+        subtractPositionDto.setQuantity(11);
+        positionControllerMock.subtractPositionAndExpectNotAcceptable(subtractPositionDto);
+    }
+
+    @Test
+    void scenarioUndoAddPositionToZero() throws Exception {
+        positionControllerMock.addPosition(addPositionDto);
+        positionControllerMock.undoOperation(1);
+
+        assertThat(positionRepository.findById(1L).isEmpty());
+    }
+
+    @Test
+    void scenarioUndoAddPositionToPartOfPosition() throws Exception {
+        positionControllerMock.addPosition(addPositionDto);
+        positionControllerMock.addPosition(addPositionDto);
+        positionControllerMock.undoOperation(2);
+
+
+        assertThat(positionRepository.findById(1L).get().getQuantity()).isEqualTo(10);
+        assertThat(positionRepository.findById(1L).get().getValueBasedOnPurchasePrice()).isEqualTo(305f);
+        assertThat(positionRepository.findById(1L).get().getAveragePurchasePrice()).isEqualTo(30.5f);
+    }
+
 
     private void addWalletDepositCashAndDownloadAssets() throws Exception {
         walletControllerMock.addNewWallet(testHelper.walletNameXtb);

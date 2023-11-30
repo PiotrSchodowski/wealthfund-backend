@@ -1,7 +1,8 @@
-package com.example.wealthFund.it;
+package com.example.wealthFund.it.controllers;
 
 import com.example.wealthFund.dto.positionDtos.AddPositionDto;
 import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
+import com.example.wealthFund.it.TestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ public class PositionControllerMock {
     ObjectMapper objectMapper = new ObjectMapper();
 
     public void addPosition(AddPositionDto addPositionDto) throws Exception {
-
         mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -32,7 +32,6 @@ public class PositionControllerMock {
     }
 
     public void addPositionAndExpectNotAcceptable(AddPositionDto addPositionDto) throws Exception {
-
         mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -42,7 +41,6 @@ public class PositionControllerMock {
     }
 
     public void subtractPosition(SubtractPositionDto subtractPositionDto) throws Exception {
-
         mockMvc.perform(MockMvcRequestBuilders.put("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/decrease")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -50,5 +48,18 @@ public class PositionControllerMock {
                 .andExpect(status().isOk());
     }
 
+    public void subtractPositionAndExpectNotAcceptable(SubtractPositionDto subtractPositionDto) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/decrease")
+                        .header("Authorization", "Bearer " + testHelper.getToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(subtractPositionDto)))
+                .andExpect(status().isNotAcceptable());
+    }
+
+    public void undoOperation(int operationId) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/undo/" + operationId)
+                        .header("Authorization", "Bearer " + testHelper.getToken()))
+                .andExpect(status().isOk());
+    }
 
 }

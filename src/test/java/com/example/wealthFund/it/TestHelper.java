@@ -21,22 +21,24 @@ public class TestHelper {
     @Autowired
     private AuthController authController;
 
-    String walletNameXtb = "xtb";
-    String userNamePiotr = "Piotr";
+    public String walletNameXtb = "xtb";
+    public String userNamePiotr = "Piotr";
     float valueOfDeposit1000 = 1000;
-    float valueOfDepositNegative = -1000;
+    float valueOfDepositNegative = (-1000);
 
     public String getToken() {
-
-        SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("Piotr");
-        signupRequest.setPassword("password");
-        signupRequest.setEmail("email@gmail.com");
-        authController.registerUser(signupRequest);
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsername("Piotr");
         loginRequest.setPassword("password");
 
         return ((JwtResponse) Objects.requireNonNull(authController.authenticateUser(loginRequest).getBody())).getAccessToken();
+    }
+
+    public void createUser() {
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setUsername("Piotr");
+        signupRequest.setPassword("password");
+        signupRequest.setEmail("email@gmail.com");
+        authController.registerUser(signupRequest);
     }
 }

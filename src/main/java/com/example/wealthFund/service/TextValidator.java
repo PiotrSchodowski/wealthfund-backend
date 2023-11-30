@@ -13,7 +13,7 @@ public class TextValidator {
 
     public AddPositionDto validateAddPosition(String userName, String walletName, AddPositionDto addPositionDto){
         checkTextValidity(userName, walletName);
-        checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getCommission());
+        checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getCommission(), addPositionDto.getOpeningCurrencyRate());
         addPositionDto.setSymbol(addPositionDto.getSymbol().toUpperCase(Locale.ROOT));
         addPositionDto.setCurrency(checkAndAdjustCurrencyCode(addPositionDto.getCurrency()));
         return addPositionDto;
@@ -23,6 +23,7 @@ public class TextValidator {
         checkTextValidity(userName, walletName);
         checkNumberValidity(subtractPositionDto.getPrice());
         checkNumberValidity(subtractPositionDto.getQuantity());
+        checkNumberValidity(subtractPositionDto.getEndingCurrencyRate());
         subtractPositionDto.setCurrency(checkAndAdjustCurrencyCode(subtractPositionDto.getCurrency()));
         return subtractPositionDto;
     }
@@ -43,10 +44,11 @@ public class TextValidator {
         validateFloatPrecision(text);
     }
 
-    public void checkNumberValidity(float text, float text2, float text3){
+    public void checkNumberValidity(float text, float text2, float text3, float text4){
         checkNumberValidity(text);
         checkNumberValidity(text2);
         checkNumberValidity(text3);
+        checkNumberValidity(text4);
     }
 
     public String checkAndAdjustCurrencyCode(String text) {
@@ -80,7 +82,7 @@ public class TextValidator {
     }
 
     private void shouldByOnlyPositive(Float text) {
-        if (text < 0) {
+        if (text <= 0) {
             throw new ShouldByOnlyPositiveException();
         }
     }

@@ -1,9 +1,11 @@
 package com.example.wealthFund.it;
 
 import com.example.wealthFund.WealthFundApplication;
+import com.example.wealthFund.it.controllers.WalletControllerMock;
 import com.example.wealthFund.repository.UserRepository;
 import com.example.wealthFund.repository.WalletRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -37,6 +39,11 @@ public class WalletIntegrationTests {
 
     @Autowired
     WalletControllerMock walletControllerMock;
+
+    @BeforeEach
+    public void setDB() {
+        testHelper.createUser();
+    }
 
 
     @AfterEach
