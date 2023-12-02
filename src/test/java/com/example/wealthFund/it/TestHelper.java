@@ -41,4 +41,12 @@ public class TestHelper {
         signupRequest.setEmail("email@gmail.com");
         authController.registerUser(signupRequest);
     }
+
+    public String getTokenByAdmin() {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsername("admin");
+        loginRequest.setPassword("Admin123");
+
+        return ((JwtResponse) Objects.requireNonNull(authController.authenticateUser(loginRequest).getBody())).getAccessToken();
+    }
 }

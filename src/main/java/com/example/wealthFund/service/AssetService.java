@@ -27,10 +27,10 @@ public class AssetService {
     private final AssetDirectoryService assetDirectoryService;
     private final FileCsvToAssetDirectoryMapper fileCsvToAssetDirectoryMapper;
     private final ScrapperService scrapperService;
-    private final CurrencyService currencyService;
 
 
     public AssetDto createAssetFromManualEntry(AssetDto assetDto) {
+
         Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(assetDto.getSymbol());
         if (assetEntityOptional.isPresent()) {
             throw new WealthFundSingleException("Asset with symbol " + assetDto.getSymbol() + " already exists");
@@ -40,7 +40,9 @@ public class AssetService {
         }
     }
 
+
     public AssetDto updatePriceOfAssetFromManualEntry(String symbol, float price) {
+
         Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(symbol);
         if (assetEntityOptional.isPresent()) {
             AssetEntity assetEntity = assetEntityOptional.get();
@@ -52,7 +54,9 @@ public class AssetService {
         }
     }
 
+
     public boolean deleteAssetBySymbol(String symbol) {
+
         Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(symbol);
         if (assetEntityOptional.isPresent()) {
             int value = assetRepository.deleteBySymbol(symbol);
@@ -63,13 +67,16 @@ public class AssetService {
         }
     }
 
+
     public AssetEntity getAssetEntityBySymbolAndExchange(String symbol, String exchange) {
 
         return assetRepository.findBySymbolAndExchange(symbol, exchange)
                 .orElseThrow(() -> new WealthFundSingleException("Asset with symbol " + symbol + " and exchange " + exchange + " not found"));
     }
 
+
     public List<AssetDto> createAssetsFromCryptocurrencies() {
+
         List<Cryptocurrency> cryptocurrencies = cryptocurrencyService.getCryptocurrenciesFromApi();
         List<AssetEntity> assetEntities = new ArrayList<>();
         for (Cryptocurrency cryptocurrency : cryptocurrencies) {
@@ -82,12 +89,15 @@ public class AssetService {
         return assetMapper.assetListToAssetDtoList(assetEntities);
     }
 
+
     public List<AssetDto> createAssetsFromUsaAssetApi() {
+
         List<AssetDirectory> assetDirectories = assetDirectoryService.getAssetDirectoryFromAlphaVantageApi();
         List<AssetEntity> assetEntities = assetMapper.assetDirectoryListToAssetEntityList(assetDirectories);
         assetRepository.saveAll(assetEntities);
         return assetMapper.assetListToAssetDtoList(assetEntities);
     }
+
 
     public List<AssetDto> createAssetsFromGpwAssetFile() {
         List<AssetDirectory> assetDirectories = fileCsvToAssetDirectoryMapper.processCsvFile();
@@ -95,6 +105,7 @@ public class AssetService {
         assetRepository.saveAll(assetEntities);
         return assetMapper.assetListToAssetDtoList(assetEntities);
     }
+
 
     public GlobalQuote savePriceToUsaAsset(String symbol) {
         Optional<AssetEntity> assetEntityOptional = assetRepository.findBySymbol(symbol);
@@ -109,6 +120,7 @@ public class AssetService {
             throw new WealthFundSingleException("Asset with symbol " + symbol + " not found");
         }
     }
+
 
     public AssetEntity setAssetPrice(AssetEntity assetEntity) {
         AssetDto assetDto = new AssetDto();
@@ -126,6 +138,7 @@ public class AssetService {
 
         return assetEntity;
     }
+
 
     public AssetDto actualizeAsset(AssetDto assetDto) {
 

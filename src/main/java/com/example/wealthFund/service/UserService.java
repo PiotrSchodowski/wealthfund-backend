@@ -16,6 +16,7 @@ import com.example.wealthFund.repository.entity.UserEntity;
 import com.example.wealthFund.security.JwtUtils;
 import com.example.wealthFund.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,6 +44,7 @@ public class UserService {
     private final JwtUtils jwtUtils;
 
     public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
+
         if (userRepository.existsByName(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -66,14 +68,14 @@ public class UserService {
         roles.add(userRole);
         userEntity.setRoles(roles);
         userRepository.save(userEntity);
-
         return ResponseEntity.ok(new WealthFundSingleException("User registered successfully!"));
     }
 
+
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
@@ -98,11 +100,18 @@ public class UserService {
 
 
     public List<UserDto> getUsers() {
-        return userMapper.userListToUserDtoList(userRepository.findAll());
+
+        List<UserEntity> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            throw new NotExistException("users not found");
+        }
+        return userMapper.userListToUserDtoList(users);
     }
 
 
+
     public UserEntity getUserByName(String userName) {
+
         Optional<UserEntity> optionalUserEntity = userRepository.findByName(userName);
         if (optionalUserEntity.isPresent()) {
             return optionalUserEntity.get();
@@ -111,6 +120,7 @@ public class UserService {
         }
 
     }
+
 
     private void validateUserExistenceThrowExceptionDoesNotExist(String userName) {
         if (!userRepository.existsByUserName(userName)) {

@@ -199,6 +199,14 @@ public class PositionIntegrationTests {
         assertThat(positionRepository.findById(1L).get().getAveragePurchasePrice()).isEqualTo(30.5f);
     }
 
+    @Test
+    void scenarioGetPositionById() throws Exception {
+        positionControllerMock.addPosition(addPositionDto);
+        positionControllerMock.getPositionById(1);
+        positionControllerMock.getPositionByIdAndExpectNotAcceptable(2);
+
+    }
+
 
     private void addWalletDepositCashAndDownloadAssets() throws Exception {
         walletControllerMock.addNewWallet(testHelper.walletNameXtb);

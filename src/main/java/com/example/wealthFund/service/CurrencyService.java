@@ -25,10 +25,12 @@ public class CurrencyService {
                 .toString();
     }
 
+
     public Currency getCurrencyFromApi() {
         ResponseEntity<Currency> response = restTemplate.exchange(apiUrl, HttpMethod.GET, null, Currency.class);
         return response.getBody();
     }
+
 
     public float convertCurrency(String baseCurrency, String targetCurrency, float valueToChange) {
         Currency currency = getCurrencyFromApi();
@@ -47,6 +49,7 @@ public class CurrencyService {
         return valueToChange * baseToTargetRate;
     }
 
+
     private float getRateForCurrency(String currencyCode, Currency currency) {
         switch (currencyCode) {
             case "PLN":
@@ -58,7 +61,6 @@ public class CurrencyService {
                 throw new WealthFundSingleException("Unknown currency");
         }
     }
-
 }
 
 

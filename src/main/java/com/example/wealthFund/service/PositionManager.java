@@ -56,6 +56,7 @@ public class PositionManager {
         return addPositionDto;
     }
 
+
     public SubtractPositionDto subtractPosition(String userName, String walletName, SubtractPositionDto subtractPositionDto) {
         subtractPositionDto = textValidator.validateSubtractPosition(userName, walletName, subtractPositionDto);
         subtractPositionDto.setTotalValueEntered(calculatePositionService.calculateTotalValueEntered(subtractPositionDto));
@@ -72,6 +73,7 @@ public class PositionManager {
         actualizationService.actualizeWalletData(walletEntity);
         return subtractPositionDto;
     }
+
 
     public UndoPositionDto undoOperation(String userName, String walletName, Long id) {
 
@@ -100,18 +102,14 @@ public class PositionManager {
 
 
     private UndoPositionDto deleteOperationHistory(WalletEntity walletEntity, Long id) {
-        List<OperationHistory> operationHistories = walletEntity.getOperationHistories();
 
+        List<OperationHistory> operationHistories = walletEntity.getOperationHistories();
         Optional<OperationHistory> operationHistoryToDelete = operationHistories.stream()
                 .filter(history -> history.getId().equals(id))
                 .findFirst();
-
         OperationHistory historyToDelete = operationHistoryToDelete.orElseThrow(() ->
                 new NotExistException(id + " id"));
-
-
         UndoPositionDto undoPositionDto = undoPositionMapper.operationHistoryToUndoPositionDto(historyToDelete);
-
         operationHistories.remove(historyToDelete);
 
         undoPositionDto.setAveragePrice((float) operationHistories.stream()
@@ -127,6 +125,18 @@ public class PositionManager {
         return undoPositionDto;
     }
 
+    public PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
+        return walletEntity.getPositions().stream()
+                .filter(isMatchingSymbolAndCurrency(addPositionDto.getSymbol(), addPositionDto.getCurrency()))
+                .findFirst()
+                .orElseGet(() -> openNewPositionEntity(addPositionDto, walletEntity));
+    }
+
+    public ResponseEntity<?> getPosition(int id) {
+        return ResponseEntity.ok(positionRepository.findById((long) id).orElseThrow(()-> new NotExistException("id")));
+    }
+
+
     PositionEntity updateSubtractingPosition(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
         if (subtractPositionDto.getQuantity() > positionEntity.getQuantity()) {
             throw new WealthFundSingleException("The quantity entered exceeds the value of the position");
@@ -135,6 +145,7 @@ public class PositionManager {
         }
     }
 
+
     PositionEntity returnPositionEntity(WalletEntity walletEntity, UndoPositionDto undoPositionDto) {
         return walletEntity.getPositions().stream()
                 .filter(isMatchingSymbolAndCurrency(undoPositionDto.getSymbol(), undoPositionDto.getPositionCurrency()))
@@ -142,12 +153,6 @@ public class PositionManager {
                 .orElseThrow(() -> new NotExistException(undoPositionDto.getSymbol()));
     }
 
-    public PositionEntity returnPositionEntity(WalletEntity walletEntity, AddPositionDto addPositionDto) {
-        return walletEntity.getPositions().stream()
-                .filter(isMatchingSymbolAndCurrency(addPositionDto.getSymbol(), addPositionDto.getCurrency()))
-                .findFirst()
-                .orElseGet(() -> openNewPositionEntity(addPositionDto, walletEntity));
-    }
 
     private PositionEntity returnPositionEntity(WalletEntity walletEntity, SubtractPositionDto subtractPositionDto) {
         return walletEntity.getPositions().stream()
@@ -155,6 +160,7 @@ public class PositionManager {
                 .findFirst()
                 .orElseThrow(() -> new NotExistException(subtractPositionDto.getSymbol()));
     }
+
 
     private PositionEntity openNewPositionEntity(AddPositionDto addPositionDto, WalletEntity walletEntity) {
 
@@ -165,6 +171,7 @@ public class PositionManager {
                 .positionOpeningDate(LocalDateTime.now())
                 .build();
     }
+
 
     private OperationHistory saveOperationHistory(PositionEntity positionEntity, AddPositionDto addPositionDto) {
 
@@ -180,6 +187,7 @@ public class PositionManager {
                 .build();
     }
 
+
     private OperationHistory saveOperationHistory(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
 
         return OperationHistory.builder()
@@ -194,6 +202,7 @@ public class PositionManager {
                 .build();
     }
 
+
     private void addOperationToWallet(WalletEntity walletEntity, OperationHistory operationHistory) {
         List<OperationHistory> operationHistories = walletEntity.getOperationHistories();
         operationHistory.setWalletName(walletEntity.getName());
@@ -202,10 +211,11 @@ public class PositionManager {
         walletRepository.save(walletEntity);
     }
 
+
     @Transactional
     private void savePositionEntity(PositionEntity positionEntity, WalletEntity walletEntity) {
-        Set<PositionEntity> positionEntities = walletEntity.getPositions();
 
+        Set<PositionEntity> positionEntities = walletEntity.getPositions();
         if (positionEntity.getQuantity() > 0) {
             PositionEntity existingPosition = findPositionBySymbolAndCurrency(positionEntities, positionEntity.getSymbol(), positionEntity.getUserCurrency());
 
@@ -219,10 +229,10 @@ public class PositionManager {
             positionEntities.removeIf(matchingSymbolAndCurrency);
             positionRepository.deleteById(positionEntity.getId());
         }
-
         walletEntity.setPositions(positionEntities);
         walletRepository.save(walletEntity);
     }
+
 
     private PositionEntity findPositionBySymbolAndCurrency(Set<PositionEntity> positionEntities, String symbol, String currency) {
 
@@ -232,11 +242,8 @@ public class PositionManager {
                 .orElse(null);
     }
 
+
     Predicate<PositionEntity> isMatchingSymbolAndCurrency(String symbol, String currency) {
         return pos -> pos.getSymbol().equals(symbol) && pos.getUserCurrency().equals(currency);
-    }
-
-    public ResponseEntity<?> getPosition(int id) {
-        return ResponseEntity.ok(positionRepository.findById((long) id));
     }
 }

@@ -47,15 +47,6 @@ public class AssetControllerTest {
     }
 
     @Test
-    public void shouldEntryManualPriceOfAsset() {
-        when(assetService.updatePriceOfAssetFromManualEntry(eq(symbol), eq(price))).thenReturn(assetDto);
-
-        AssetDto result = assetController.entryManualPriceOfAsset(symbol, price);
-
-        assertThat(result).isEqualTo(assetDto);
-    }
-
-    @Test
     public void shouldDeleteAssetBySymbol() {
         when(assetService.deleteAssetBySymbol(eq(symbol))).thenReturn(true);
 

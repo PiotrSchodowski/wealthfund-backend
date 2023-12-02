@@ -8,11 +8,12 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.RestController;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Service
+@RestController
 public class PositionControllerMock {
 
     @Autowired
@@ -62,4 +63,15 @@ public class PositionControllerMock {
                 .andExpect(status().isOk());
     }
 
+    public void getPositionById(int id) throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/position/" + id)
+                .header("Authorization", "Bearer " + testHelper.getToken()))
+                .andExpect(status().isOk());
+    }
+
+    public void getPositionByIdAndExpectNotAcceptable(int id) throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/position/" + id)
+                        .header("Authorization", "Bearer " + testHelper.getToken()))
+                .andExpect(status().isNotAcceptable());
+    }
 }

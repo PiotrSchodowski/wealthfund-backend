@@ -6,10 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Service
+@RestController
 public class CashControllerMock {
 
     @Autowired

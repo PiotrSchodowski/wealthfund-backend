@@ -1,14 +1,13 @@
 package com.example.wealthFund.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Builder
 public class AssetDto {
 
     private String name;
