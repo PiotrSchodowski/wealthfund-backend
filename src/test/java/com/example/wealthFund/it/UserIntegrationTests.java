@@ -17,10 +17,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@Testcontainers
+
 @AutoConfigureMockMvc
-@SpringBootTest(classes = {WealthFundApplication.class, TestConfig.class})
-public class UserIntegrationTests {
+public class UserIntegrationTests extends TestConfig{
 
     @Autowired
     MockMvc mockMvc;

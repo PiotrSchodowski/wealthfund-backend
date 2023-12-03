@@ -1,6 +1,5 @@
 package com.example.wealthFund.it;
 
-import com.example.wealthFund.WealthFundApplication;
 import com.example.wealthFund.dto.AssetDto;
 import com.example.wealthFund.it.controllers.AssetControllerMock;
 import com.example.wealthFund.repository.AssetRepository;
@@ -8,16 +7,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@Testcontainers
 @AutoConfigureMockMvc
-@SpringBootTest(classes = {WealthFundApplication.class, TestConfig.class})
-public class AssetIntegrationTests {
+public class AssetIntegrationTests extends TestConfig {
 
     @Autowired
     MockMvc mockMvc;
@@ -73,7 +69,7 @@ public class AssetIntegrationTests {
     void scenarioEntryManualAsset() throws Exception {
         assetControllerMock.entryManualAsset(assetDto);
         assertThat(assetRepository.count()).isEqualTo(1);
-        assertThat(assetRepository.findById(1L).get().getSymbol()).isEqualTo("WIG20");
+        assertThat(assetRepository.findAll().get(0).getSymbol()).isEqualTo("WIG20");
     }
 
     @Test
@@ -84,10 +80,11 @@ public class AssetIntegrationTests {
     }
 
     @Test
+    @WithMockUser
     void scenarioSavePriceToUsaAsset() throws Exception {
         assetControllerMock.addUsaAssets();
         assetControllerMock.savePriceToUsaAsset("AAPL");
-        assertThat(assetRepository.findById(1L).get().getPrice()).isNotNull();
+        assertThat(assetRepository.findAll().get(0).getPrice()).isNotNull();
     }
 
     @Test
@@ -101,6 +98,5 @@ public class AssetIntegrationTests {
         assetControllerMock.addGpwAssets();
         assetControllerMock.savePriceOfAssetNotAcceptable("PKNNN");
     }
-
 
 }

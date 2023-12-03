@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface PositionRepository extends JpaRepository<PositionEntity,Long> {
 
     Optional<PositionEntity> findById(Long id);
+
+    Optional<PositionEntity> findBySymbol(String symbol);
 }

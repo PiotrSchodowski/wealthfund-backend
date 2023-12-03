@@ -20,10 +20,8 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
-@Testcontainers
 @AutoConfigureMockMvc
-@SpringBootTest(classes = {WealthFundApplication.class, TestConfig.class})
-public class WalletIntegrationTests {
+public class WalletIntegrationTests extends TestConfig{
 
     @Autowired
     MockMvc mockMvc;
