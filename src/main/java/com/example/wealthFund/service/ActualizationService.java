@@ -6,7 +6,6 @@ import com.example.wealthFund.repository.WalletRepository;
 import com.example.wealthFund.repository.entity.PositionEntity;
 import com.example.wealthFund.repository.entity.WalletEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ import java.util.Set;
 public class ActualizationService {
 
     private final WalletRepository walletRepository;
-    private final UserService userService;
     private final CalculateWalletService calculateWalletService;
     private final AssetService assetService;
     private final CalculatePositionService calculatePositionService;
@@ -25,6 +23,7 @@ public class ActualizationService {
 
 
     public void actualizeWalletData(WalletEntity walletEntity) {
+
         walletEntity.setBasicValue(calculateWalletService.calculateWalletBasicValue(walletEntity));
         walletEntity.setActualValue(calculateWalletService.calculateWalletActualValue(walletEntity));
 
@@ -37,7 +36,9 @@ public class ActualizationService {
         walletRepository.save(walletEntity);
     }
 
+
     public void actualizeWalletDataInterval(WalletEntity walletEntity) {
+
         walletEntity.setBasicValue(calculateWalletService.calculateWalletBasicValue(walletEntity));
         walletEntity.setActualValue(calculateWalletService.calculateWalletActualValue(walletEntity));
         walletEntity.setWalletValueHistories(calculateWalletService.updateWalletValueHistory(walletEntity));
@@ -51,14 +52,14 @@ public class ActualizationService {
         walletRepository.save(walletEntity);
     }
 
+
     void actualizePositionData(PositionEntity positionEntity) {
+
         AssetDto assetDto = new AssetDto();
         assetDto.setSymbol(positionEntity.getSymbol());
         assetDto.setName(positionEntity.getName());
         assetDto.setExchange(positionEntity.getExchange());
-
         assetDto = assetService.actualizeAsset(assetDto);
-
         assetDto.setPrice(calculatePositionService.convertToCurrency(assetDto.getPrice(), positionEntity.getBasicCurrency(), positionEntity.getWalletCurrency()));
 
         positionEntity.setActualPrice(assetDto.getPrice());
@@ -69,15 +70,6 @@ public class ActualizationService {
         positionEntity.setRateOfReturn(calculatePositionService.calculateRateOfReturn(assetDto.getPrice(), positionEntity));
 
         positionRepository.save(positionEntity);
-    }
-
-    public ResponseEntity<?> actualizePricesToWallet(String userName, String walletName) {
-
-        userService.getUserByName(userName).getWallets().stream()
-                .filter(walletEntity -> walletEntity.getName().equals(walletName))
-                .forEach(this::actualizeWalletData);
-
-        return ResponseEntity.ok("Prices actualized");
     }
 
 

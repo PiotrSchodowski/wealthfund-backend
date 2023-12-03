@@ -17,9 +17,11 @@ public class CalculateWalletService {
         return ((positionEntity.getValueOfPosition() * 100) / calculateWalletActualValue(walletEntity));
     }
 
+
     public float calculateWalletActualResult(WalletEntity walletEntity) {
         return calculateWalletActualValue(walletEntity) - calculateWalletBasicValue(walletEntity);
     }
+
 
     float calculateWalletActualValue(WalletEntity walletEntity) {
         float valueOfCash;
@@ -28,12 +30,15 @@ public class CalculateWalletService {
         return (float) positionEntities.stream().mapToDouble(PositionEntity::getValueOfPosition).sum() + valueOfCash;
     }
 
+
     float calculateWalletBasicValue(WalletEntity walletEntity) {
         List<UserCashTransactionEntity> userTransactions = walletEntity.getUserTransactions();
         return (float) userTransactions.stream().mapToDouble(UserCashTransactionEntity::getValue).sum();
     }
 
+
     List<WalletValueHistory> updateWalletValueHistory(WalletEntity walletEntity) {
+
         List<WalletValueHistory> walletValueHistories = walletEntity.getWalletValueHistories();
         WalletValueHistory walletValueHistory = new WalletValueHistory();
         walletValueHistory.setActualValue(walletEntity.getActualValue());
@@ -51,10 +56,7 @@ public class CalculateWalletService {
         );
 
         walletValueHistory.setDate(truncatedNow);
-
         walletValueHistories.add(walletValueHistory);
         return walletValueHistories;
     }
-
-
 }

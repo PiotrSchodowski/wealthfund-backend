@@ -1,5 +1,6 @@
 package com.example.wealthFund.security;
 
+import com.example.wealthFund.model.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+
+import static com.example.wealthFund.model.ERole.ADMIN;
 
 @Configuration
 @EnableMethodSecurity
@@ -58,7 +61,6 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
-                                .requestMatchers("/dataManagement/**").permitAll()
                                .anyRequest().authenticated()
 //                                .anyRequest().permitAll()
                 );

@@ -4,20 +4,18 @@ import com.example.wealthFund.dto.positionDtos.AddPositionDto;
 import com.example.wealthFund.dto.positionDtos.SubtractPositionDto;
 import com.example.wealthFund.repository.entity.AssetEntity;
 import com.example.wealthFund.repository.entity.PositionEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class CalculatePositionService {
 
     private final CurrencyService currencyService;
     private final AssetService assetService;
 
-    public CalculatePositionService(CurrencyService currencyService, AssetService assetService) {
-        this.currencyService = currencyService;
-        this.assetService = assetService;
-    }
 
     public float calculateTotalValueEntered(AddPositionDto addPositionDto) {
         float valueWithoutCommission = addPositionDto.getPrice() * addPositionDto.getQuantity();
@@ -30,7 +28,9 @@ public class CalculatePositionService {
         return (subtractPositionDto.getQuantity() * subtractPositionDto.getPrice()) * subtractPositionDto.getEndingCurrencyRate();
     }
 
+
     public PositionEntity decreasePositionData(PositionEntity positionEntity, SubtractPositionDto subtractPositionDto) {
+
         positionEntity.setQuantity(positionEntity.getQuantity() - subtractPositionDto.getQuantity());
         positionEntity.setValueBasedOnPurchasePrice(positionEntity.getQuantity() * positionEntity.getAveragePurchasePrice());
         positionEntity.setValueOfPosition(positionEntity.getQuantity() * positionEntity.getActualPrice());
@@ -39,10 +39,11 @@ public class CalculatePositionService {
         return positionEntity;
     }
 
+
     public PositionEntity increasePositionData(PositionEntity positionEntity, AddPositionDto addPositionDto) {
+
         float averageAssetPrice = calculateAveragePrice(positionEntity, addPositionDto);
         AssetEntity assetEntity = assetService.getAssetEntityBySymbolAndExchange(addPositionDto.getSymbol(), addPositionDto.getExchange());
-
         assetEntity = assetService.setAssetPrice(assetEntity);
         float actualPrice = convertToCurrency(assetEntity.getPrice(), assetEntity.getCurrency(), positionEntity.getWalletCurrency());
 
@@ -62,7 +63,9 @@ public class CalculatePositionService {
         return positionEntity;
     }
 
+
     void copyPositionFields(PositionEntity source, PositionEntity destination) {
+
         destination.setQuantity(source.getQuantity());
         destination.setAveragePurchasePrice(source.getAveragePurchasePrice());
         destination.setValueBasedOnPurchasePrice(source.getValueBasedOnPurchasePrice());
@@ -73,6 +76,7 @@ public class CalculatePositionService {
         destination.setRateOfReturn(source.getRateOfReturn());
     }
 
+
     float convertToCurrency(float price, String baseCurrency, String targetCurrency) {
         if (targetCurrency.equals(baseCurrency)) {
             return price;
@@ -81,9 +85,22 @@ public class CalculatePositionService {
         }
     }
 
+
+    float calculateRateOfReturn(float actualPrice, PositionEntity positionEntity) {
+        return ((actualPrice - positionEntity.getAveragePurchasePrice()) / positionEntity.getAveragePurchasePrice()) * 100;
+    }
+
+
+    private float calculateAveragePrice(PositionEntity positionEntity, AddPositionDto addPositionDto) {
+        float totalQuantity = positionEntity.getQuantity() + addPositionDto.getQuantity();
+        float totalValue = positionEntity.getValueBasedOnPurchasePrice() + addPositionDto.getTotalValueEntered();
+        return totalValue / totalQuantity;
+    }
+
     private float calculateValueAfterCurrencyConvert(AddPositionDto addPositionDto, float valueBeforeConvert) {
         return addPositionDto.getOpeningCurrencyRate() * valueBeforeConvert;
     }
+
 
     private float adjustNominalCommission(float valueOfCommission, boolean isPercentageCommission, float valueWithoutCommission) {
         if (isPercentageCommission) {
@@ -92,19 +109,4 @@ public class CalculatePositionService {
             return valueOfCommission;
         }
     }
-
-    private AssetEntity checkIsAssetPresent(AddPositionDto addPositionDto) {
-        return assetService.getAssetEntityBySymbolAndExchange(addPositionDto.getSymbol(), addPositionDto.getExchange());
-    }
-
-     float calculateAveragePrice(PositionEntity positionEntity, AddPositionDto addPositionDto) {
-        float totalQuantity = positionEntity.getQuantity() + addPositionDto.getQuantity();
-        float totalValue = positionEntity.getValueBasedOnPurchasePrice() + addPositionDto.getTotalValueEntered();
-        return totalValue / totalQuantity;
-    }
-
-    float calculateRateOfReturn(float actualPrice, PositionEntity positionEntity) {
-        return ((actualPrice - positionEntity.getAveragePurchasePrice()) / positionEntity.getAveragePurchasePrice()) * 100;
-    }
-
 }

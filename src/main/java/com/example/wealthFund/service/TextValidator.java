@@ -12,20 +12,25 @@ import java.util.regex.Pattern;
 public class TextValidator {
 
     public AddPositionDto validateAddPosition(String userName, String walletName, AddPositionDto addPositionDto){
+
         checkTextValidity(userName, walletName);
-        checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getCommission());
+        checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getCommission(), addPositionDto.getOpeningCurrencyRate());
         addPositionDto.setSymbol(addPositionDto.getSymbol().toUpperCase(Locale.ROOT));
         addPositionDto.setCurrency(checkAndAdjustCurrencyCode(addPositionDto.getCurrency()));
         return addPositionDto;
     }
 
+
     public SubtractPositionDto validateSubtractPosition(String userName, String walletName, SubtractPositionDto subtractPositionDto){
+
         checkTextValidity(userName, walletName);
         checkNumberValidity(subtractPositionDto.getPrice());
         checkNumberValidity(subtractPositionDto.getQuantity());
+        checkNumberValidity(subtractPositionDto.getEndingCurrencyRate());
         subtractPositionDto.setCurrency(checkAndAdjustCurrencyCode(subtractPositionDto.getCurrency()));
         return subtractPositionDto;
     }
+
 
     public void checkTextValidity(String text) {
         containsWhitespaces(text);
@@ -33,21 +38,26 @@ public class TextValidator {
         containsSpecialCharacters(text);
     }
 
+
     public void checkTextValidity(String text,String text2) {
         checkTextValidity(text);
         checkTextValidity(text2);
     }
+
 
     public void checkNumberValidity(float text) {
         shouldByOnlyPositive(text);
         validateFloatPrecision(text);
     }
 
-    public void checkNumberValidity(float text, float text2, float text3){
+
+    public void checkNumberValidity(float text, float text2, float text3, float text4){
         checkNumberValidity(text);
         checkNumberValidity(text2);
         checkNumberValidity(text3);
+        checkNumberValidity(text4);
     }
+
 
     public String checkAndAdjustCurrencyCode(String text) {
         text = text.toUpperCase(Locale.ROOT);
@@ -58,6 +68,7 @@ public class TextValidator {
         }
     }
 
+
     private void containsWhitespaces(String text) {
         for (int i = 0; i < text.length(); i++) {
             if (Character.isWhitespace(text.charAt(i))) {
@@ -66,11 +77,13 @@ public class TextValidator {
         }
     }
 
+
     private void isTheTextNotAcceptableLength(String text) {
         if (text.length() < 3 || text.length() > 16) {
             throw new TextNotAcceptableLengthException();
         }
     }
+
 
     private void containsSpecialCharacters(String text) {
         Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
@@ -79,13 +92,16 @@ public class TextValidator {
         }
     }
 
+
     private void shouldByOnlyPositive(Float text) {
-        if (text < 0) {
+        if (text <= 0) {
             throw new ShouldByOnlyPositiveException();
         }
     }
 
+
     void validateFloatPrecision(Float text) {
+
         String numberString = Float.toString(text);
         int decimalIndex = numberString.indexOf('.');
         if (decimalIndex != -1) {

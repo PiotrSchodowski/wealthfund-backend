@@ -15,8 +15,8 @@ public class ScrapperService {
 
 
     public AssetPrice getAssetPriceBySymbol(String symbol) {
-        String url = "https://www.biznesradar.pl/notowania/" + symbol + "#1d_lin_lin";
 
+        String url = "https://www.biznesradar.pl/notowania/" + symbol + "#1d_lin_lin";
         try {
             Document document = Jsoup.connect(url).get();
             Element priceElement = document.selectFirst(".q_ch_act");
@@ -35,22 +35,22 @@ public class ScrapperService {
 
 
     public AssetDto actualizeGpwAsset(AssetDto assetDto) {
-        String url = "https://www.biznesradar.pl/notowania/" + assetDto.getSymbol() + "#1d_lin_lin";
 
+        String url = "https://www.biznesradar.pl/notowania/" + assetDto.getSymbol() + "#1d_lin_lin";
         return getActualizedAssetByGPWorUSA(assetDto, url);
     }
 
 
     public AssetDto actualizeUsaAsset(AssetDto assetDto) {
-        String url = "https://www.biznesradar.pl/notowania/" + assetDto.getSymbol() + ".US#1d_lin_lin";
 
+        String url = "https://www.biznesradar.pl/notowania/" + assetDto.getSymbol() + ".US#1d_lin_lin";
         return getActualizedAssetByGPWorUSA(assetDto, url);
     }
 
 
     public AssetDto actualizeCryptoAsset(AssetDto assetDto) {
-        String url = "https://coinmarketcap.com/currencies/" + assetDto.getName().toLowerCase();
 
+        String url = "https://coinmarketcap.com/currencies/" + assetDto.getName().toLowerCase();
         try {
             Document document = Jsoup.connect(url).get();
             Element priceElement = document.selectFirst("span.sc-f70bb44c-0.jxpCgO.base-text");

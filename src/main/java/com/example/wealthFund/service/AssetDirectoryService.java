@@ -25,12 +25,14 @@ public class AssetDirectoryService {
         this.apiKey = apiKey;
     }
 
+
     public List<AssetDirectory> getAssetDirectoryFromAlphaVantageApi() {
         String url = baseUrl + LISTING_STATUS_PATH + apiKey;
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
         String csvData = response.getBody();
         return ApiCsvToAssetDirectoryMapper.mapCsvAssetDirectoryToObjectAssetDirectory(csvData);
     }
+
 
     public GlobalQuote getGlobalQuoteFromUsaAsset(String symbol) {
         String url = baseUrl + GLOBAL_QUOTE_PATH + symbol + "&apikey=" + apiKey;

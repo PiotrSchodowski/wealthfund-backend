@@ -22,10 +22,12 @@ public class CryptocurrencyService {
         this.apiUrl = apiUrl;
     }
 
+
     public List<Cryptocurrency> getCryptocurrenciesFromApi() {
         ResponseEntity<Cryptocurrency[]> response = restTemplate.exchange(apiUrl, HttpMethod.GET, null, Cryptocurrency[].class);
         return Arrays.asList(response.getBody());
     }
+
 
     public Cryptocurrency getCryptocurrencyBySymbol(String symbol) {
         List<Cryptocurrency> cryptocurrencies = getCryptocurrenciesFromApi();

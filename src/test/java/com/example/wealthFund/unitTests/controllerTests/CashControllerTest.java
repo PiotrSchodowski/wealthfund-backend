@@ -26,15 +26,6 @@ public class CashControllerTest {
     private final String userName = "testUser";
     private final String walletName = "testWallet";
 
-//    @Test
-//    public void shouldDepositCashIntoTheWallet() {
-//        float valueOfDeposit = 100.0f;
-//        when(cashService.depositCashIntoTheWallet(userName, walletName, valueOfDeposit)).thenReturn(true);
-//
-//        boolean result = cashController.depositCashIntoTheWallet(userName, walletName, valueOfDeposit);
-//
-//        assertThat(result).isTrue();
-//    }
 
     @Test
     public void shouldWithdrawCashFromTheWallet() {
