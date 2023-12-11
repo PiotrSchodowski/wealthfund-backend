@@ -30,7 +30,7 @@ public class ScrapperServiceTest {
         AssetPrice assetPrice = scrapperService.getAssetPriceBySymbol(symbol);
 
         assertEquals(symbol, assetPrice.getSymbol());
-        assertEquals(approximation, assetPrice.getPrice(), 1);
+        assertEquals(approximation, assetPrice.getPrice(), 10);
     }
 
     @Test

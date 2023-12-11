@@ -21,7 +21,7 @@ public class ScheduledTasks {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(cron = "0 */30 * * * *")
     public void actualizeWalletData() {
         actualizationService.actualizeEachWallet();
         log.info("The wallets have updated {}", dateFormat.format(new Date()));

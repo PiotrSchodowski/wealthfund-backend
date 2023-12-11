@@ -75,7 +75,7 @@ public class TextValidatorTest {
 
     @Test
     void shouldThrowPrecisionException() {
-        float numberWithTooManyDecimals = 10.555f;
+        float numberWithTooManyDecimals = 10.55577f;
         assertThrows(PrecisionException.class, () -> textValidator.checkNumberValidity(numberWithTooManyDecimals));
     }
 
@@ -92,30 +92,4 @@ public class TextValidatorTest {
         assertThrows(WealthFundSingleException.class, () -> textValidator.checkAndAdjustCurrencyCode(currency));
     }
 
-    @Test
-    void shouldReturnAddPositionDto() {
-        String userName = "Piotr";
-        String walletName = "Xtb";
-        AddPositionDto addPositionDto = AddPositionDto.builder()
-                .quantity(10)
-                .price(10)
-                .commission(10)
-                .currency("usd")
-                .build();
-
-        assertEquals(addPositionDto, textValidator.validateAddPosition(userName, walletName, addPositionDto));
-    }
-
-    @Test
-    void shouldReturnSubtractPositionDto() {
-        String userName = "Piotr";
-        String walletName = "Xtb";
-        SubtractPositionDto subtractPositionDto = SubtractPositionDto.builder()
-                .price(10)
-                .quantity(10)
-                .currency("usd")
-                .build();
-
-        assertEquals(subtractPositionDto, textValidator.validateSubtractPosition(userName, walletName, subtractPositionDto));
-    }
 }

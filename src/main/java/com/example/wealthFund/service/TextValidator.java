@@ -14,7 +14,7 @@ public class TextValidator {
     public AddPositionDto validateAddPosition(String userName, String walletName, AddPositionDto addPositionDto){
 
         checkTextValidity(userName, walletName);
-        checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getCommission(), addPositionDto.getOpeningCurrencyRate());
+        checkNumberValidity(addPositionDto.getQuantity(), addPositionDto.getPrice(), addPositionDto.getOpeningCurrencyRate());
         addPositionDto.setSymbol(addPositionDto.getSymbol().toUpperCase(Locale.ROOT));
         addPositionDto.setCurrency(checkAndAdjustCurrencyCode(addPositionDto.getCurrency()));
         return addPositionDto;
@@ -51,11 +51,11 @@ public class TextValidator {
     }
 
 
-    public void checkNumberValidity(float text, float text2, float text3, float text4){
+    public void checkNumberValidity(float text, float text2, float text3){
         checkNumberValidity(text);
         checkNumberValidity(text2);
         checkNumberValidity(text3);
-        checkNumberValidity(text4);
+
     }
 
 

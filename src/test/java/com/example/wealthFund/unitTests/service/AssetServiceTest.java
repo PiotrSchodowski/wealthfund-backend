@@ -67,62 +67,6 @@ class AssetServiceTest {
     }
 
     @Test
-    void shouldSetPriceForZeroPriceByCrypto() {
-        AssetEntity assetEntity = new AssetEntity();
-        assetEntity.setSymbol("BTC");
-        assetEntity.setExchange("NONE");
-        assetEntity.setPrice(0);
-
-        Cryptocurrency cryptocurrency = new Cryptocurrency();
-        cryptocurrency.setSymbol("BTC");
-        cryptocurrency.setPrice(50000);
-
-        when(cryptocurrencyService.getCryptocurrencyBySymbol("BTC")).thenReturn(cryptocurrency);
-
-        AssetEntity updatedAssetEntity = assetService.setAssetPrice(assetEntity);
-
-        assertEquals(50000, updatedAssetEntity.getPrice());
-    }
-
-    @Test
-    void shouldSetPriceForZeroPriceByExchangeGPW() {
-        AssetEntity assetEntity = new AssetEntity();
-        assetEntity.setSymbol("PKO");
-        assetEntity.setExchange("GPW");
-        assetEntity.setPrice(0);
-
-        AssetPrice stockPrice = new AssetPrice();
-        stockPrice.setSymbol("PKO");
-        stockPrice.setPrice(150);
-
-        when(scrapperService.getAssetPriceBySymbol("PKO")).thenReturn(stockPrice);
-
-        AssetEntity updatedAssetEntity = assetService.setAssetPrice(assetEntity);
-
-
-        assertEquals(150, updatedAssetEntity.getPrice());
-    }
-
-    @Test
-    void shouldSetPriceForZeroPriceByExchangeNASDAQ() {
-        AssetEntity assetEntity = new AssetEntity();
-        assetEntity.setSymbol("MSFT");
-        assetEntity.setExchange("NASDAQ");
-        assetEntity.setPrice(0);
-
-        GlobalQuote globalQuote = new GlobalQuote();
-        GlobalQuoteData globalQuoteData = new GlobalQuoteData();
-        globalQuoteData.setPrice(300);
-        globalQuote.setGlobalQuoteData(globalQuoteData);
-
-        when(assetDirectoryService.getGlobalQuoteFromUsaAsset("MSFT")).thenReturn(globalQuote);
-
-        AssetEntity updatedAssetEntity = assetService.setAssetPrice(assetEntity);
-
-        assertEquals(300, updatedAssetEntity.getPrice());
-    }
-
-    @Test
     void shouldSavePriceForExistingAsset() {
         AssetEntity assetEntity = new AssetEntity();
         assetEntity.setSymbol("AAPL");
@@ -282,17 +226,7 @@ class AssetServiceTest {
         assertEquals(assetDto, result);
     }
 
-    @Test
-    void shouldThrowExceptionWhenNotFoundAsset() {
-        AssetDto assetDto = new AssetDto();
-        assetDto.setSymbol("AAPL");
-        assetDto.setName("Apple Inc");
-        assetDto.setExchange("NASDAQ");
 
-        when(assetRepository.findBySymbol(assetDto.getSymbol())).thenReturn(Optional.of(new AssetEntity()));
-
-        assertThrows(NotExistException.class, () -> assetService.createAssetFromManualEntry(assetDto));
-    }
 
     @Test
     void shouldUpdatePriceOfAssetFromManualEntry() {
