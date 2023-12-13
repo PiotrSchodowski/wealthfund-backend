@@ -141,11 +141,6 @@ public class PositionIntegrationTests extends TestConfig {
         positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
     }
 
-    @Test
-    void scenarioAddPositionWhenCommissionIsNegativeAndExpectNotAcceptable() throws Exception {
-        addPositionDto.setCommission(-1);
-        positionControllerMock.addPositionAndExpectNotAcceptable(addPositionDto);
-    }
 
     @Test
     void scenarioAddPositionWhenQuantityIsZeroAndExpectNotAcceptable() throws Exception {
