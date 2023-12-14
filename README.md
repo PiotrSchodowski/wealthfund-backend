@@ -51,7 +51,7 @@ financial performance in real time.
 ## Setup
 To Deploy Application on your computer, you need Java 17+ and Gradle:
 
-1. Pull the project from main branch 
+1. Pull the project from the main branch 
 3. Command Line:
 >gradle clean build
 
@@ -96,7 +96,7 @@ Entry name of wallet and choose currency:
 
 ![img_9.png](img_9.png)
 
-You can add more wallets in different currency:
+You can add multiple wallets in different currencies:
 
 ![img_10.png](img_10.png)
 
@@ -135,19 +135,20 @@ Now, you can add positions, click the **buy asset** or **+** when you would like
 >`on the chart:`
 
 ![img_19.png](img_19.png)
+
 ![img_20.png](img_20.png)
 
 ### Watch your history:
 
-and delete when you made mistake
+and undo when you made mistake
 
 ![img_21.png](img_21.png)
 
-### When you are Admin, you can manage assets in special page!:
+### When you are Admin, you can manage assets in special page !
 
 ![img_22.png](img_22.png)
 
-Admin can import assets or create new when it is not in the database.
+Admin can import assets or create new ones if they are not in the database.
 
 ## Thank you for your attention!
- When you have any questions, solutions, ideas please contact me: ps.schodowski@gmail.com
+If you have any questions, solutions, or ideas, please contact me at: ps.schodowski@gmail.com
