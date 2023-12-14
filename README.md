@@ -12,10 +12,11 @@
   * [Watch your positions](#watch-your-positions)
   * [Watch your portfolios in time](#watch-your-portfolios-in-time)
   * [Watch your history](#watch-your-history)
+  * [Watch you profile](#watch-you-profile-with-information-about-you-fortunes-in-different-currencies)
   * [Admin page](#when-you-are-admin-you-can-manage-assets-in-special-page-)
 
 ## General info
-WealthFund is an application designed for easy and intuitive tracking and management of your investment portfolios. 
+``WealthFund`` is an application designed for easy and intuitive tracking and management of your investment portfolios. 
 Whether you have multiple brokerage accounts, ledgers, or assets scattered across various exchanges, this application provides a consolidated view of all your investments in one place.
 
 The application allows you to build portfolios that can consist of assets (over 12,000) such as:
@@ -33,7 +34,7 @@ This keeps investors informed about all their investments across different broke
 exchanges, or ledger-type wallets (for cryptocurrencies).
 All of this is based on three primary currencies: USD, EUR, and PLN.
 
-In summary, WealthFund provides a comprehensive solution for investors to stay up-to-date with their diverse
+In summary, `WealthFund` provides a comprehensive solution for investors to stay up-to-date with their diverse
 investments across various brokerage accounts, exchanges, and wallets, offering a visual representation of their
 financial performance in real time.
 
@@ -51,20 +52,20 @@ financial performance in real time.
 ## Setup
 To Deploy Application on your computer, you need Java 17+ and Gradle:
 
-1. Pull the project from the main branch 
-3. Command Line:
->gradle clean build
+1. **Pull the project from the main branch** 
+2. **Command Line:**
+>`gradle clean build`
 
-3. Run .jar file with command:
->java -jar patch\file_name.jar
+3. **Run .jar file with command:**
+>`java -jar patch\file_name.jar`
  
-4. To run locally, you need to have MySQL installed and running on port 3306. 
-   You can change the port in the application.properties file.
+4. **To run locally, you need to have MySQL installed and running on port 3306. 
+   You can change the port in the application.properties file.**
 
-5. Pull the frontend from https://github.com/PiotrSchodowski/wealthfund-frontend main branch
+5. **Pull the frontend from https://github.com/PiotrSchodowski/wealthfund-frontend main branch**
 
-6. Entry to wealthfund-frontend and run with command:
->npm start
+6. **Entry to wealthfund-frontend and run with command:**
+>`npm start`
 
 ## How it works
 #### Home page
@@ -143,6 +144,10 @@ Now, you can add positions, click the **buy asset** or **+** when you would like
 and undo when you made mistake
 
 ![img_21.png](img_21.png)
+
+### Watch you profile with information about you fortunes in different currencies:
+
+![img_23.png](img_23.png)
 
 ### When you are Admin, you can manage assets in special page !
 
