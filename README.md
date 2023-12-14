@@ -9,6 +9,10 @@
   * [Profile page](#when-you-log-in-you-will-see-your-profile-page)
   * [Add wallets](#next-step-is-to-add-your-wallets)
   * [Add positions](#add-positions)
+  * [Watch your positions](#watch-your-positions)
+  * [Watch your portfolios in time](#watch-your-portfolios-in-time)
+  * [Watch your history](#watch-your-history)
+  * [Admin page](#when-you-are-admin-you-can-manage-assets-in-special-page)
 
 ## General info
 WealthFund is an application designed for easy and intuitive tracking and management of your investment portfolios. 
@@ -74,9 +78,9 @@ To use the application, you must register and log in.
 ![img_4.png](img_4.png)
 ### When you log in, you will see your profile page
 Now you have access to all tabs, such as:
-> Wallets
-> Positions
-> History
+> `Wallets`
+> `Positions`
+> `History`
 
 ![img_6.png](img_6.png)
 ### Next step is to add your wallets 
@@ -107,8 +111,43 @@ First you have to choose wallet and deposit cash:
 ![img_12.png](img_12.png)
 ![img_13.png](img_13.png)
 
-Now, you can add positions, click the **buy asset** or **+** when you will increase existing position
+Now, you can add positions, click the **buy asset** or **+** when you would like to increase existing position
 
 ![img_15.png](img_15.png)
 ![img_14.png](img_14.png)
 
+### Watch your positions:
+
+>`on the table:`
+
+![img_16.png](img_16.png)
+
+>`on the chart:`
+
+![img_17.png](img_17.png)
+
+### Watch your portfolios in time:
+
+>`on the table:`
+
+![img_18.png](img_18.png)
+
+>`on the chart:`
+
+![img_19.png](img_19.png)
+![img_20.png](img_20.png)
+
+### Watch your history:
+
+and delete when you made mistake
+
+![img_21.png](img_21.png)
+
+### When you are Admin, you can manage assets in special page!:
+
+![img_22.png](img_22.png)
+
+Admin can import assets or create new when it is not in the database.
+
+## Thank you for your attention!
+ When you have any questions, solutions, ideas please contact me: ps.schodowski@gmail.com
