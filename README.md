@@ -4,6 +4,11 @@
 * [Technologies](#technologies)
 * [Setup](#setup)
 * [How it works](#how-it-works)
+  * [Home page](#home-page)
+  * [Registration and login](#registration-and-login)
+  * [Profile page](#when-you-log-in-you-will-see-your-profile-page)
+  * [Add wallets](#next-step-is-to-add-your-wallets)
+  * [Add positions](#add-positions)
 
 ## General info
 WealthFund is an application designed for easy and intuitive tracking and management of your investment portfolios. 
@@ -69,12 +74,41 @@ To use the application, you must register and log in.
 ![img_4.png](img_4.png)
 ### When you log in, you will see your profile page
 Now you have access to all tabs, such as:
-* Wallets
-* Positions
-* History
+> Wallets
+> Positions
+> History
 
-* ![img_6.png](img_6.png)
+![img_6.png](img_6.png)
 ### Next step is to add your wallets 
-You can do it in the Wallets tab and position tab when it is the first your wallet.
-![img_7.png](img_7.png)
+You can do it in the **wallets** tab:
+
 ![img_8.png](img_8.png)
+
+or **position** tab when it is the first your wallet:
+
+![img_7.png](img_7.png)
+
+Entry name of wallet and choose currency: 
+
+![img_9.png](img_9.png)
+
+You can add more wallets in different currency:
+
+![img_10.png](img_10.png)
+
+### Add positions
+Now you can add positions to your wallets.
+You can do it in the **positions** tab:
+
+![img_11.png](img_11.png)
+
+First you have to choose wallet and deposit cash:
+
+![img_12.png](img_12.png)
+![img_13.png](img_13.png)
+
+Now, you can add positions, click the **buy asset** or **+** when you will increase existing position
+
+![img_15.png](img_15.png)
+![img_14.png](img_14.png)
+
