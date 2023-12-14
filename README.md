@@ -57,4 +57,20 @@ To Deploy Application on your computer, you need Java 17+ and Gradle:
 >npm start
 
 ## How it works
+#### Home page
+Home page is available for everyone. It contains information about the application.
+![img_2.png](img_2.png)
 #### Registration and login
+To use the application, you must register and log in.
+![img_5.png](img_5.png)
+![img_4.png](img_4.png)
+#### When you log in, you will see your profile page
+Now you have access to all tabs, such as:
+* Wallets
+* Positions
+* History
+![img_6.png](img_6.png)
+#### Next step is to add your wallets 
+You can do it in the Wallets tab and position tab when it is the first your wallet.
+![img_7.png](img_7.png)
+![img_8.png](img_8.png)
