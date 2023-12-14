@@ -41,6 +41,7 @@ financial performance in real time.
 ## Technologies
 * Java 17
 * Spring Boot 3.14
+* Spring data jpa
 * Spring Security JWT
 * Test Containers with Docker
 * Gradle

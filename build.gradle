@@ -33,11 +33,11 @@ dependencies {
 
     //spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     //mysql
     runtimeOnly 'com.mysql:mysql-connector-j:8.0.33'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     //json i csv
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.0'
@@ -45,20 +45,6 @@ dependencies {
     implementation 'com.opencsv:opencsv:5.5.2'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.jsoup:jsoup:1.14.3'
-
-    // tests
-    testImplementation 'org.assertj:assertj-core:3.23.1'
-    testImplementation 'org.mockito:mockito-core:4.11.0'
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-    testImplementation 'com.google.truth:truth:1.1.5'
-
-    testImplementation "org.testcontainers:testcontainers:1.19.2"
-    testImplementation 'org.testcontainers:mysql:1.19.2'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.2'
-    testImplementation 'org.springframework.security:spring-security-test'
-
-
-
 
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
@@ -71,12 +57,21 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
     //security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
+    // tests
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'com.google.truth:truth:1.1.5'
+    testImplementation "org.testcontainers:testcontainers:1.19.2"
+    testImplementation 'org.testcontainers:mysql:1.19.2'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.2'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 tasks.named('test') {
