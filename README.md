@@ -12,7 +12,7 @@
   * [Watch your positions](#watch-your-positions)
   * [Watch your portfolios in time](#watch-your-portfolios-in-time)
   * [Watch your history](#watch-your-history)
-  * [Admin page](#when-you-are-admin-you-can-manage-assets-in-special-page)
+  * [Admin page](#when-you-are-admin-you-can-manage-assets-in-special-page-)
 
 ## General info
 WealthFund is an application designed for easy and intuitive tracking and management of your investment portfolios. 
