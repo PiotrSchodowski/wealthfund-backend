@@ -14,6 +14,7 @@ import java.util.Set;
 
 @Tag(name = "2 Wallet Management", description = "adding and deleting wallets")
 @RestController
+@RequestMapping("/api")
 public class WalletController {
 
     private final WalletService walletService;

@@ -4,13 +4,11 @@ import com.example.wealthFund.exception.WealthFundSingleException;
 import com.example.wealthFund.service.CashService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "3 Cash Management", description = "depositing and withdrawing cash from the wallet")
 @RestController
+@RequestMapping("/api")
 public class CashController {
 
     private final CashService cashService;

@@ -25,14 +25,14 @@ public class WalletControllerMock {
 
 
     public void addNewWallet(String walletName) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallets/" + walletName + "/PLN")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/Piotr/wallets/" + walletName + "/PLN")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void addNewWalletWhenSecondTimeTheSameData() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallets/" + testHelper.walletNameXtb + "/PLN")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/Piotr/wallets/" + testHelper.walletNameXtb + "/PLN")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotAcceptable())
@@ -44,28 +44,28 @@ public class WalletControllerMock {
     }
 
     public void addNewWalletAndExpectNotAcceptable(String walletName) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallets/" + walletName + "/PLN")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/Piotr/wallets/" + walletName + "/PLN")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotAcceptable());
     }
 
     public void deleteWalletAndExpectOk() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/user/Piotr/wallets/" + testHelper.walletNameXtb)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/Piotr/wallets/" + testHelper.walletNameXtb)
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public String getWallets() throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/user/Piotr/wallets")
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/user/Piotr/wallets")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
     }
 
     public String getWallet() throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get("/user/Piotr/wallets/" + testHelper.walletNameXtb)
+        return mockMvc.perform(MockMvcRequestBuilders.get("/api/user/Piotr/wallets/" + testHelper.walletNameXtb)
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();

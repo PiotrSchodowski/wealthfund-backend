@@ -24,35 +24,35 @@ public class AssetControllerMock {
     ObjectMapper objectMapper = new ObjectMapper();
 
     public void addGpwAssets() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/dataManagement/assets/import/gpwAssets")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/dataManagement/assets/import/gpwAssets")
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void addUsaAssets() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/dataManagement/assets/import/usaAssets")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/dataManagement/assets/import/usaAssets")
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void addCryptocurrencies() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/dataManagement/assets/import/cryptocurrencies")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/dataManagement/assets/import/cryptocurrencies")
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void getAllAssets() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/dataManagement/assets/getAll")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/dataManagement/assets/getAll")
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void entryManualAsset(AssetDto assetDto) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/dataManagement/assets/insert")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/dataManagement/assets/insert")
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(assetDto)))
@@ -60,28 +60,28 @@ public class AssetControllerMock {
     }
 
     public void deleteAssetBySymbol(String symbol) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/dataManagement/assets/delete/" + symbol)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/dataManagement/assets/delete/" + symbol)
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void savePriceToUsaAsset(String symbol) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/dataManagement/assets/update/usaAssets/setPrice/" + symbol)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/dataManagement/assets/update/usaAssets/setPrice/" + symbol)
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void savePriceOfAsset(String symbol) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/dataManagement/assets/update/" + symbol)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/dataManagement/assets/update/" + symbol)
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     public void savePriceOfAssetNotAcceptable(String symbol) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/dataManagement/assets/update/" + symbol)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/dataManagement/assets/update/" + symbol)
                         .header("Authorization", "Bearer " + testHelper.getTokenByAdmin())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotAcceptable());

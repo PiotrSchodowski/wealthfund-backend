@@ -20,7 +20,7 @@ public class CashControllerMock {
     TestHelper testHelper;
 
     public void depositCashIntoTheWallet(String walletName, float valueOfDeposit) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + walletName + "/cashDeposit/" + valueOfDeposit)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/Piotr/wallet/" + walletName + "/cashDeposit/" + valueOfDeposit)
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -28,7 +28,7 @@ public class CashControllerMock {
 
 
     public void withdrawCashFromTheWallet(float valueCanWithdraw) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/user/Piotr/wallet/"
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/user/Piotr/wallet/"
                                 + testHelper.walletNameXtb
                                 + "/cashWithdraw/"
                                 + valueCanWithdraw)
@@ -38,7 +38,7 @@ public class CashControllerMock {
     }
 
     public void withdrawCashFromTheWalletAndExpectNotAcceptable(float valueCannotWithdraw) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/user/Piotr/wallet/"
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/user/Piotr/wallet/"
                                 + testHelper.walletNameXtb
                                 + "/cashWithdraw/"
                                 + valueCannotWithdraw)
@@ -48,7 +48,7 @@ public class CashControllerMock {
     }
 
     public void depositCashIntoTheWalletAndExpectNotAcceptable(float valueOfDeposit) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/cashDeposit/" + valueOfDeposit)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/Piotr/wallet/" + testHelper.walletNameXtb + "/cashDeposit/" + valueOfDeposit)
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotAcceptable());

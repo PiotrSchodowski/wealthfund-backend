@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "5 Position Management", description = "adding, decreasing and undoing positions")
 @RestController
+@RequestMapping("/api")
 public class PositionController {
 
     private final PositionManager positionManager;

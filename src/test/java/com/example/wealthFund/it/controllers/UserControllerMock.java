@@ -19,13 +19,13 @@ public class UserControllerMock {
 
 
     public void deleteUser(String userName) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/" + userName)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/" + userName)
                 .header("Authorization", "Bearer " + testHelper.getToken()))
                 .andExpect(status().isOk());
     }
 
     public void getAllUsers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users")
                 .header("Authorization", "Bearer " + testHelper.getToken()))
                 .andExpect(status().isOk());
     }

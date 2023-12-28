@@ -25,7 +25,7 @@ public class PositionControllerMock {
     ObjectMapper objectMapper = new ObjectMapper();
 
     public void addPosition(AddPositionDto addPositionDto) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addPositionDto)))
@@ -33,7 +33,7 @@ public class PositionControllerMock {
     }
 
     public void addPositionAndExpectNotAcceptable(AddPositionDto addPositionDto) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addPositionDto)))
@@ -42,7 +42,7 @@ public class PositionControllerMock {
     }
 
     public void subtractPosition(SubtractPositionDto subtractPositionDto) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/decrease")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/decrease")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(subtractPositionDto)))
@@ -50,7 +50,7 @@ public class PositionControllerMock {
     }
 
     public void subtractPositionAndExpectNotAcceptable(SubtractPositionDto subtractPositionDto) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/decrease")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/decrease")
                         .header("Authorization", "Bearer " + testHelper.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(subtractPositionDto)))
@@ -58,19 +58,19 @@ public class PositionControllerMock {
     }
 
     public void undoOperation(int operationId) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/undo/" + operationId)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/Piotr/wallet/" + testHelper.walletNameXtb + "/position/undo/" + operationId)
                         .header("Authorization", "Bearer " + testHelper.getToken()))
                 .andExpect(status().isOk());
     }
 
     public void getPositionById(int id) throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/position/" + id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user/position/" + id)
                 .header("Authorization", "Bearer " + testHelper.getToken()))
                 .andExpect(status().isOk());
     }
 
     public void getPositionByIdAndExpectNotAcceptable(int id) throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/position/" + id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user/position/" + id)
                         .header("Authorization", "Bearer " + testHelper.getToken()))
                 .andExpect(status().isNotAcceptable());
     }
