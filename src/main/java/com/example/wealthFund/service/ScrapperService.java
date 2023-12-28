@@ -48,7 +48,7 @@ public class ScrapperService {
     }
 
 
-    public AssetDto actualizeCryptoAsset(AssetDto assetDto) {
+    public AssetDto actualizeCryptoAsset    (AssetDto assetDto) {
 
         String url = "https://coinmarketcap.com/currencies/" + assetDto.getName().toLowerCase();
         try {
